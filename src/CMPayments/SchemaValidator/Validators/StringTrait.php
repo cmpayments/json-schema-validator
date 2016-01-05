@@ -1,6 +1,6 @@
-<?php namespace CM\JsonSchemaValidator\Validators;
+<?php namespace CMPayments\SchemaValidator\Validators;
 
-use CM\JsonSchemaValidator\Exceptions\ValidateException;
+use CMPayments\SchemaValidator\Exceptions\ValidateException;
 
 trait StringTrait
 {
@@ -16,13 +16,13 @@ trait StringTrait
         // check for $schema->minLength
         if (isset($schema->minLength) && (($currentLength = strlen($data)) < $schema->minLength)) {
 
-            $this->addError(ValidateException::USER_STRING_MINIMUM_CHECK, [$path, $schema->minLength, $data, $currentLength]);
+            $this->addError(ValidateException::ERROR_USER_STRING_MINIMUM_CHECK, [$path, $schema->minLength, $data, $currentLength]);
         }
 
         // check for $schema->maxLength
         if (isset($schema->maxLength) && (($currentLength = strlen($data)) > $schema->maxLength)) {
 
-            $this->addError(ValidateException::USER_STRING_MAXIMUM_CHECK, [$path, $schema->maxLength, $data, $currentLength]);
+            $this->addError(ValidateException::ERROR_USER_STRING_MAXIMUM_CHECK, [$path, $schema->maxLength, $data, $currentLength]);
         }
     }
 }

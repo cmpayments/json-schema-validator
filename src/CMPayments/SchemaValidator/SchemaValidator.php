@@ -1,19 +1,34 @@
-<?php namespace CM\JsonSchemaValidator;
+<?php namespace CMPayments\SchemaValidator;
 
-use CM\JsonSchemaValidator\Exceptions\ValidateException;
+use CMPayments\Cache\Cache;
+use CMPayments\SchemaValidator\Exceptions\ValidateException;
 
 /**
- * Class JsonSchemaValidator
+ * Class SchemaValidator
  *
  * @Author  Boy Wijnmaalen <boy.wijnmaalen@cmtelecom.com>
- * @package CM\Validator
+ * @package CMPayments\Validator
  */
-class JsonSchemaValidator extends BaseValidator implements ValidatorInterface
+class SchemaValidator extends BaseValidator implements ValidatorInterface
 {
+    /**
+     * @var array
+     */
     private $cacheReferencedSchemas = [];
 
+    /**
+     * @var null
+     */
     private $rootSchema = null;
 
+    /**
+     * @var Cache|null
+     */
+    protected $cache;
+
+    /**
+     * @var array
+     */
     private $minMaxProperties = [
         'minimum'   => ['minimum', 'maximum'],
         'minItems'  => ['minItems', 'maxItems'],
@@ -21,78 +36,52 @@ class JsonSchemaValidator extends BaseValidator implements ValidatorInterface
     ];
 
     /**
-     * JsonSchemaValidator constructor.
+     * SchemaValidator constructor.
      *
-     * @param null|string $data
-     * @param null|string $schema
-     * @param array       $config
-     *
-     * @throws ValidateException
-     */
-    public function __construct($data = '', $schema = '', $config = [])
-    {
-        if (!empty($schema) && !empty($schema)) {
-
-            $this->check($data, $schema, $config);
-        }
-    }
-
-    /**
-     * Start checking the $data against a $schema
-     *
-     * @param       $data
-     * @param       $schema
-     * @param array $config
+     * @param            $data
+     * @param            $schema
+     * @param Cache|null $cache
      *
      * @throws ValidateException
      */
-    public function check($data, $schema, $config = [])
+    public function __construct($data, $schema, Cache $cache = null)
     {
-        // merge $config with default config (if $config is not empty)
-        if (!empty($config)) {
+        // if $cache is empty, create a new instance of Cache
+        if (is_null($cache)) {
 
-            $this->config = array_merge($this->config, $config);
+            $cache = new Cache();
         }
 
-        // check if $schema and $data variable are both a string to begin with
-        foreach (['Data' => $data, 'Schema' => $schema] as $type => $property) {
+        $this->cache = $cache;
 
-            if (!is_string($property)) {
-                throw new ValidateException(ValidateException::ERROR_INPUT_IS_NOT_A_STRING, [$type, $this->getPreposition(gettype($property)), gettype($property)]);
-            }
+        // check if $schema is an object to begin with
+        if (!is_object($schema) || (is_callable($schema) && ($schema instanceof \Closure))) {
+
+            throw new ValidateException(ValidateException::ERROR_INPUT_IS_NOT_A_OBJECT, ['Schema', $this->getPreposition(gettype($schema)), gettype($schema), '']);
         }
 
-        // Validate if all types in $this->validTypes have a callable validation method
-        $this->validateValidTypes();
+        if (empty($cache->getFilename())) {
 
-        // calculate filename
-        $filename = $this->config['cache.directory'] . md5($schema) . '.php';
+            $cache->setFilename(md5(json_encode($schema)) . '.php');
+        }
 
-        if (file_exists($filename)) {
+        // if cache file exists, require it, if not, validate the schema
+        if (file_exists(($filename = $cache->getAbsoluteFilePath()))) {
 
             $this->rootSchema = require $filename;
         } else {
 
-            // validate and decode JSON, all in one method because json_decode used in < PHP7 is not that optimized
-            // so reduce the number of json_decode() calls
-            $this->rootSchema = $this->validateAndConvertJSON($schema, 'Schema');
+            // decode the valid JSON
+            $this->rootSchema = $schema;
 
             // validate Schema
             $this->rootSchema = $this->validateSchema($this->rootSchema);
 
-            // write to cache file (if directory is writable)
-            if (is_writable($this->config['cache.directory'])) {
-
-                file_put_contents($filename, $this->generateRunnableCache($this->rootSchema));
-            } elseif ($this->config['debug']) {
-
-                // output exception when $this->config['debug'] === true
-                throw new ValidateException(ValidateException::ERROR_CACHE_DIRECTORY_NOT_WRITABLE, $this->config['cache.directory']);
-            }
+            $cache->putContent($this->rootSchema, $filename);
         }
 
-        // validate $data
-        $this->validateData($this->validateAndConvertJSON($data, 'Data'), $this->rootSchema);
+        // decode the valid JSON
+        $this->validateData($this->rootSchema, $data);
     }
 
     /**
@@ -101,8 +90,10 @@ class JsonSchemaValidator extends BaseValidator implements ValidatorInterface
      * @param             $data
      * @param             $schema
      * @param null|string $path
+     *
+     * @return bool
      */
-    public function validateData($data, $schema, $path = null)
+    public function validateData($schema, $data, $path = null)
     {
         // check if the required property is set
         if (isset($schema->required)) {
@@ -111,27 +102,48 @@ class JsonSchemaValidator extends BaseValidator implements ValidatorInterface
 
                 $count = count($missing);
 
+                // add error
                 $this->addError(
-                    ValidateException::USER_CHECK_IF_ALL_REQUIRED_PROPERTIES_ARE_SET,
+                    ValidateException::ERROR_USER_CHECK_IF_ALL_REQUIRED_PROPERTIES_ARE_SET,
                     [$this->conjugationObject($count, 'property', 'properties'), implode('\', \'', array_flip($missing)), $this->conjugationToBe($count), (($path) ?: '/')]
                 );
             }
         }
 
-        // loop through all the data
-        foreach ($data as $property => $value) {
+        // BaseValidator::_ARRAY
+        if (is_array($data) && ($schema->type === BaseValidator::_ARRAY)) {
 
-            // check if $property in $data actually exist in $schema, if so, validate
-            if (isset($schema->properties->$property)) {
+            // check if the expected $schema->type matches gettype($data)
+            $this->validateType($schema, $data, $path);
 
-                $this->validate($schema->properties->$property, $value, $property, $path);
-            } elseif (
-                (isset($schema->additionalProperties) && !$schema->additionalProperties)
-                || (!isset($schema->additionalProperties) && (isset($this->rootSchema->additionalProperties) && !$this->rootSchema->additionalProperties))
-            ) {
-                // log that a fields is missing
-                $this->addError(ValidateException::USER_DATA_PROPERTY_IS_NOT_A_VALID_PROPERTY, ($path . '/' . $property));
+            foreach ($data as $property => $value) {
+
+                $this->validate($schema->items, $property, $value, $path);
             }
+            // BaseValidator::OBJECT
+        } elseif (is_object($data)) {
+
+            // check if the expected $schema->type matches gettype($data)
+            $this->validateType($schema, $data, (($path) ?: '/'));
+
+            foreach ($data as $property => $value) {
+
+                if (isset($schema->properties->$property)) {
+
+                    $this->validate($schema->properties->$property, $property, $value, $path);
+                    // $schema->properties->$property is not set but check if it allowed based on $schema->additionalProperties
+                } elseif (
+                    (isset($schema->additionalProperties) && !$schema->additionalProperties)
+                    || (!isset($schema->additionalProperties) && (isset($this->rootSchema->additionalProperties) && !$this->rootSchema->additionalProperties))
+                ) {
+                    // $schema->additionalProperties says NO, log that a fields is missing
+                    $this->addError(ValidateException::ERROR_USER_DATA_PROPERTY_IS_NOT_AN_ALLOWED_PROPERTY, ($path . '/' . $property));
+                }
+            }
+            // Everything else
+        } else {
+
+            $this->validate($schema, null, $data, $path);
         }
     }
 
@@ -145,41 +157,22 @@ class JsonSchemaValidator extends BaseValidator implements ValidatorInterface
      *
      * @return bool
      */
-    public function validate($schema, $data, $property, $path)
+    public function validate($schema, $property, $data, $path)
     {
-        // override because 'double' (float), 'integer' are covered by 'number' according to http://json-schema.org/latest/json-schema-validation.html#anchor79
-        if (in_array(($type = gettype($data)), [BaseValidator::DOUBLE, BaseValidator::INTEGER])) {
-
-            $type = BaseValidator::NUMBER;
-        }
-
-        // check if given type matches the expected type, if not add verbose error
-        if ($type !== $schema->type) {
-
-            $msg    = ValidateException::USER_DATA_VALUE_DOES_NOT_MATCH_CORRECT_TYPE_1;
-            $params = [($path . '/' . $property), $this->getPreposition($schema->type), $schema->type, $this->getPreposition($type), $type];
-
-            if (!in_array($type, [BaseValidator::OBJECT, BaseValidator::_ARRAY])) {
-
-                $msg      = ValidateException::USER_DATA_VALUE_DOES_NOT_MATCH_CORRECT_TYPE_2;
-                $params[] = (string)$data;
-            }
-
-            // add error
-            $this->addError($msg, $params);
-
-            return false;
-        }
+        // check if the expected $schema->type matches gettype($data)
+        $type = $this->validateType($schema, $data, ($path . '/' . $property));
 
         // append /$property to $path
         $path .= '/' . $property;
 
-        // do recursion
-        if (is_object($data)) {
+        // if $type is an object
+        if ($type === BaseValidator::OBJECT) {
 
-            $this->validateData($data, $schema, $path);
-            // everything else except boolean
-        } elseif ($type !== BaseValidator::BOOLEAN) {
+            $this->validateData($schema, $data, $path);
+        } elseif (
+            ($type !== BaseValidator::BOOLEAN)
+            && ($schema->type === $type)
+        ) { // everything else except boolean
 
             $method = 'validate' . ucfirst($type);
             $this->$method($data, $schema, $path);
@@ -197,7 +190,7 @@ class JsonSchemaValidator extends BaseValidator implements ValidatorInterface
             //$this->validateOneOf($data, $schema, $path);
         }
 
-        return true;
+        return false;
     }
 
     /**
@@ -219,16 +212,10 @@ class JsonSchemaValidator extends BaseValidator implements ValidatorInterface
             $schema = $this->getReference($schema);
         }
 
-        // check if the given schema is an object
-        if (!is_object($schema)) {
-
-            throw new ValidateException(ValidateException::ERROR_SCHEMA_NO_OBJECT, $path);
-        }
-
         // check if the given schema is not empty
         if (empty((array)$schema)) {
 
-            throw new ValidateException(ValidateException::ERROR_SCHEMA_CANNOT_BE_EMPTY, $path);
+            throw new ValidateException(ValidateException::ERROR_SCHEMA_CANNOT_BE_EMPTY_IN_PATH, $path);
         }
 
         // validate mandatory $schema properties
@@ -240,16 +227,37 @@ class JsonSchemaValidator extends BaseValidator implements ValidatorInterface
         // validate $schema->properties
         if (isset($schema->properties)) {
 
+            // check if the given schema is not empty
+            if (empty((array)$schema->properties)) {
+
+                throw new ValidateException(ValidateException::ERROR_SCHEMA_CANNOT_BE_EMPTY_IN_PATH, ($path . '/properties'));
+            }
+
             foreach ($schema->properties as $property => $childSchema) {
+
+                $subPath = $path . '.properties';
 
                 // when an object key is empty it becomes '_empty_' by json_decode(), catch it since this is not valid
                 if ($property === '_empty_') {
 
-                    throw new ValidateException(ValidateException::ERROR_EMPTY_KEY_NOT_ALLOWED_IN_OBJECT, $path);
+                    throw new ValidateException(ValidateException::ERROR_EMPTY_KEY_NOT_ALLOWED_IN_OBJECT, $subPath);
+                }
+
+                // check if $childSchema is an object to begin with
+                if (!is_object($childSchema)) {
+
+                    throw new ValidateException(
+                        ValidateException::ERROR_INPUT_IS_NOT_A_OBJECT,
+                        [
+                            'Schema',
+                            $this->getPreposition(gettype($childSchema)),
+                            gettype($childSchema),
+                            (' in ' . $subPath)
+                        ]);
                 }
 
                 // do recursion
-                $schema->properties->$property = $this->validateSchema($childSchema, ($path . '.properties.' . $property));
+                $schema->properties->$property = $this->validateSchema($childSchema, ($subPath . '.' . $property));
             }
 
             // check if the optional property 'required' is set on $schema
@@ -448,7 +456,7 @@ class JsonSchemaValidator extends BaseValidator implements ValidatorInterface
         // both $schema->$maxProperty cannot be zero
         if (isset($schema->$maxProperty) && ($schema->$maxProperty === 0)) {
 
-            throw new ValidateException(ValidateException::ERROR_SCHEMA_PROPERTY_CANNOT_NOT_BE_ZERO, [$path, $maxProperty]);
+            throw new ValidateException(ValidateException::ERROR_SCHEMA_MAX_PROPERTY_CANNOT_NOT_BE_ZERO, [$path, $maxProperty]);
         }
 
         if (isset($schema->$minProperty) && isset($schema->$maxProperty) && ($schema->$minProperty > $schema->$maxProperty)) {
@@ -492,21 +500,6 @@ class JsonSchemaValidator extends BaseValidator implements ValidatorInterface
                 ValidateException::ERROR_SCHEMA_REQUIRED_AND_PROPERTIES_MUST_MATCH,
                 [$this->conjugationObject($count), implode('\', \'', array_flip($missing)), $verb, $requiredPath, $verb, $path]
             );
-        }
-    }
-
-    /**
-     * Validate if all types in $this->getValidTypes() have a callable validation method
-     */
-    private function validateValidTypes()
-    {
-        foreach ($this->getValidTypes() as $validType) {
-
-            if ((!in_array($validType, [BaseValidator::OBJECT, BaseValidator::BOOLEAN]))
-                && !method_exists($this, ($method = 'validate' . ucfirst($validType)))
-            ) {
-                throw new ValidateException(ValidateException::ERROR_VALIDATION_METHOD_DOES_NOT_EXIST, [$method, $validType]);
-            }
         }
     }
 
@@ -627,63 +620,60 @@ class JsonSchemaValidator extends BaseValidator implements ValidatorInterface
             throw new ValidateException(ValidateException::ERROR_NO_JSON_SCHEMA_WAS_FOUND, $schema->{'$ref'});
         }
 
-        // check if $response is valid JSON and return
-        return $this->validateAndConvertJSON($response, $schema->{'$ref'});
-    }
+        $json = new Json($response);
 
-    /**
-     * Check if $string is valid JSON and return the decoded value
-     *
-     * @param $input
-     * @param $type
-     *
-     * @return mixed
-     * @throws ValidateException
-     */
-    private function validateAndConvertJSON($input, $type)
-    {
-        // check if $data variable is valid JSON
-        $result = json_decode($input);
-        if (empty($result) && (json_last_error() !== JSON_ERROR_NONE)) {
+        if ($json->validate()) {
 
-            throw new ValidateException(ValidateException::ERROR_INPUT_IS_NOT_VALID_JSON, $type);
+            return $json->getDecodedJSON();
         }
-
-        return $result;
     }
 
     /**
-     * Create runnable cache for $variable
+     * Validates the JSON SCHEMA data type against $data
      *
-     * @param            $variable
-     * @param bool|false $recursion
+     * @param $data
      *
-     * @return mixed|string
-     *
-     * @author Bas Peters <bp@cm.nl>
+     * @return string
      */
-    private function generateRunnableCache($variable, $recursion = false)
+    private function validateType($schema, $data, $path)
     {
-        if ($variable instanceof \stdClass) {
+        // gettype() on a closure returns 'object' which is not what we want
+        if (is_callable($data) && ($data instanceof \Closure)) {
 
-            // workaround for a PHP bug where var_export cannot deal with stdClass
-            $result = '(object) ' . self::generateRunnableCache(get_object_vars($variable), true);
+            $type = BaseValidator::CLOSURE;
         } else {
 
-            if (is_array($variable)) {
-                $array = [];
+            // override because 'double' (float), 'integer' are covered by 'number' according to http://json-schema.org/latest/json-schema-validation.html#anchor79
+            if (in_array(($type = gettype($data)), [BaseValidator::DOUBLE, BaseValidator::INTEGER])) {
 
-                foreach ($variable as $key => $value) {
-
-                    $array[] = var_export($key, true) . ' => ' . self::generateRunnableCache($value, true);
-                }
-                $result = 'array (' . implode(', ', $array) . ')';
-            } else {
-
-                $result = var_export($variable, true);
+                $type = BaseValidator::NUMBER;
             }
         }
 
-        return $recursion ? $result : sprintf('<?php return %s;', $result);
+        // check if given type matches the expected type, if not add verbose error
+        if ($type !== $schema->type) {
+
+            $msg    = ValidateException::ERROR_USER_DATA_VALUE_DOES_NOT_MATCH_CORRECT_TYPE_1;
+            $params = [$path, $this->getPreposition($schema->type), $schema->type, $this->getPreposition($type), $type];
+
+            if (!in_array($type, [BaseValidator::OBJECT, BaseValidator::CLOSURE, BaseValidator::_ARRAY, BaseValidator::BOOLEAN])) {
+
+                $msg = ValidateException::ERROR_USER_DATA_VALUE_DOES_NOT_MATCH_CORRECT_TYPE_2;
+
+                if (in_array($type, [BaseValidator::STRING])) {
+
+                    $data = str_replace("\n", '', $data);
+                    $data = preg_replace('/\s+/', '', $data);
+                    $data = (strlen($data) < 25) ?: substr($data, 0, 25);
+                }
+
+                $params[] = $data;
+            }
+
+            // add error
+            $this->addError($msg, $params);
+        }
+
+        return $type;
     }
 }

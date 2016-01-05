@@ -1,11 +1,38 @@
 {
+    "name": "cmpayments/schemavalidator",
+    "description": "SchemaValidator is a PHP implementation for validating JSON against a Schema (also a string), the JSON and Schema are both linted with https://github.com/cmpayments/jsonlint. This library is optimized for speed and performance.",
+    "keywords": ["json", "php", "parser", "lint", "linter", "validator", "validation", "syntax", "syntaxcheck", "schemavalidation"],
+    "type": "library",
+    "license": "MIT",
+    "homepage": "https://github.com/cmpayments/schemavalidator",
+    "authors": [
+        {
+            "name": "Boy Wijnmaalen",
+            "email": "boy.wijnmaalen@cmtelecom.com",
+            "homepage": "https://www.cmpayments.com"
+        }
+    ],
+    "support": {
+        "email": "boy.wijnmaalen@cmtelecom.com",
+        "issues": "https://github.com/cmpayments/schemavalidator/issues",
+        "wiki": "https://github.com/cmpayments/schemavalidator/wiki",
+        "source": "https://github.com/cmpayments/schemavalidator/releases",
+        "docs": "https://github.com/cmpayments/schemavalidator/wiki"
+    },
     "require": {
+        "php": "^5.4 || ^7.0",
+        "cmpayments/jsonlint": "^0.0.3"
+    },
+    "require-dev": {
         "phpunit/phpunit": "~5.0"
     },
+    "suggest": {
+        "phpunit/phpunit": "If PHP Unit is not globally installed on your system the tests will not run, install the PHP Unit package locally to run the tests"
+    },
     "autoload": {
-        "psr-4": { "CM\\": "src/CM/" }
+        "psr-4": { "CMPayments\\": "src/CMPayments/" }
     },
     "autoload-dev": {
-        "psr-4": { "CM\\Tests\\JsonSchemaValidator\\Tests\\": "tests/JsonSchemaValidator/Tests/" }
+        "psr-4": { "CM\\Tests\\SchemaValidator\\Tests\\": "tests/" }
     }
 }

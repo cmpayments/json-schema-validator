@@ -1,6 +1,6 @@
-<?php namespace CM\JsonSchemaValidator\Validators;
+<?php namespace CMPayments\SchemaValidator\Validators;
 
-use CM\JsonSchemaValidator\Exceptions\ValidateException;
+use CMPayments\SchemaValidator\Exceptions\ValidateException;
 
 trait ArrayTrait
 {
@@ -19,7 +19,7 @@ trait ArrayTrait
             $count = count($data);
 
             $this->addError(
-                ValidateException::USER_ARRAY_MINIMUM_CHECK,
+                ValidateException::ERROR_USER_ARRAY_MINIMUM_CHECK,
                 [$path, $schema->minItems, $this->conjugationObject($schema->minItems), $this->conjugationToBe($count), $count, $this->conjugationObject($count)]
             );
         }
@@ -30,7 +30,7 @@ trait ArrayTrait
             $count = count($data);
 
             $this->addError(
-                ValidateException::USER_ARRAY_MAXIMUM_CHECK,
+                ValidateException::ERROR_USER_ARRAY_MAXIMUM_CHECK,
                 [$path, $schema->maxItems, $this->conjugationToBe($count), $count, $this->conjugationObject($count)]
             );
         }
@@ -40,7 +40,7 @@ trait ArrayTrait
 
             if (count(array_unique($data, SORT_REGULAR)) !== $count) {
 
-                $this->addError(ValidateException::USER_ARRAY_NO_DUPLICATES_ALLOWED, $path);
+                $this->addError(ValidateException::ERROR_USER_ARRAY_NO_DUPLICATES_ALLOWED, $path);
             }
         }
 
@@ -57,7 +57,7 @@ trait ArrayTrait
         // Continue checking if every $row in $data matches $schema->items
         foreach ($data as $property => $row) {
 
-            $this->validate($schema->items, $row, $this->numberToOrdinal($property + 1) . ' child', $path);
+            $this->validate($schema->items, $this->numberToOrdinal($property + 1) . ' child', $row, $path);
         }
     }
 }
