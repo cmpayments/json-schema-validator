@@ -12,6 +12,9 @@ Usage
 -----
 
 ```
+use CMPayments\Cache\Cache;
+use CMPayments\Json\Json;
+use CMPayments\SchemaValidator\SchemaValidator;;
 
 /*
  * Example #1 - simple; validate JSON input for syntax errors
