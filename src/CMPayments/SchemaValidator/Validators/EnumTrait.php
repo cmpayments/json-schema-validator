@@ -1,6 +1,6 @@
-<?php namespace CM\JsonSchemaValidator\Validators;
+<?php namespace CMPayments\SchemaValidator\Validators;
 
-use CM\JsonSchemaValidator\Exceptions\ValidateException;
+use CMPayments\SchemaValidator\Exceptions\ValidateException;
 
 trait EnumTrait
 {
@@ -24,7 +24,7 @@ trait EnumTrait
         if (!in_array($needle, $haystack)) {
 
             $this->addError(
-                ValidateException::USER_ENUM_NEEDLE_NOT_FOUND_IN_HAYSTACK,
+                ValidateException::ERROR_USER_ENUM_NEEDLE_NOT_FOUND_IN_HAYSTACK,
                 [$path, $data, $this->conjugationObject(count($schema->enum), 'this specific value', 'one of these values'), implode('\', \'', $schema->enum)]
             );
         }

@@ -1,12 +1,12 @@
-<?php namespace CM\JsonSchemaValidator;
+<?php namespace CMPayments\SchemaValidator;
 
-use CM\JsonSchemaValidator\Exceptions\ValidateException;
-use CM\JsonSchemaValidator\Validators\ArrayTrait;
-use CM\JsonSchemaValidator\Validators\EnumTrait;
-use CM\JsonSchemaValidator\Validators\ErrorTrait;
-use CM\JsonSchemaValidator\Validators\FormatTrait;
-use CM\JsonSchemaValidator\Validators\NumberTrait;
-use CM\JsonSchemaValidator\Validators\StringTrait;
+use CMPayments\SchemaValidator\Exceptions\ValidateException;
+use CMPayments\SchemaValidator\Validators\ArrayTrait;
+use CMPayments\SchemaValidator\Validators\EnumTrait;
+use CMPayments\SchemaValidator\Validators\ErrorTrait;
+use CMPayments\SchemaValidator\Validators\FormatTrait;
+use CMPayments\SchemaValidator\Validators\NumberTrait;
+use CMPayments\SchemaValidator\Validators\StringTrait;
 
 class BaseValidator
 {
@@ -28,6 +28,8 @@ class BaseValidator
     const NUMBER  = 'number';
     const OBJECT  = 'object';
     const STRING  = 'string';
+    const CLOSURE = 'closure';
+    const _NULL   = 'null';
 
     // String formats
     const DATE        = 'date';
@@ -35,11 +37,6 @@ class BaseValidator
     const EMAIL       = 'email';
     const TIME        = 'time';
     const UTC_SECONDS = 'utc-seconds';
-
-    protected $config = [
-        'cache.directory' => __DIR__ . '/cache/',
-        'debug'           => false
-    ];
 
     // Valid types for the items in $schema->properties
     private $validTypes = [
@@ -58,22 +55,6 @@ class BaseValidator
         self::TIME,
         self::UTC_SECONDS
     ];
-
-    /**
-     * @param $validType
-     */
-    public function addValidType($validType)
-    {
-        $this->validTypes[] = $validType;
-    }
-
-    /**
-     * @param array $validTypes
-     */
-    public function setValidTypes(array $validTypes)
-    {
-        $this->validTypes = $validTypes;
-    }
 
     /**
      * @return array

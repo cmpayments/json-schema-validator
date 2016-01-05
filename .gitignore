@@ -1,5 +1,4 @@
 .idea/
 vendor/
 public/
-src/CM/JsonSchemaValidator/cache/
-public/tests/
+storage/cache/
