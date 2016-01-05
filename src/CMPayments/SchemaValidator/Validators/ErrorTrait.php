@@ -1,7 +1,8 @@
-<?php namespace CM\JsonSchemaValidator\Validators;
+<?php namespace CMPayments\SchemaValidator\Validators;
 
-use CM\JsonSchemaValidator\BaseValidator;
-use CM\JsonSchemaValidator\Exceptions\ValidateException;
+use CMPayments\Cache\Cache;
+use CMPayments\SchemaValidator\BaseValidator;
+use CMPayments\SchemaValidator\Exceptions\ValidateException;
 
 trait ErrorTrait
 {
@@ -14,10 +15,12 @@ trait ErrorTrait
     private $prepositions = [
         BaseValidator::_ARRAY  => 'an',
         BaseValidator::BOOLEAN => 'a',
+        BaseValidator::CLOSURE => 'a',
         BaseValidator::INTEGER => 'an',
         BaseValidator::NUMBER  => 'a',
         BaseValidator::OBJECT  => 'an',
-        BaseValidator::STRING  => 'a'
+        BaseValidator::STRING  => 'a',
+        BaseValidator::_NULL   => ''
     ];
 
     /**
@@ -29,13 +32,13 @@ trait ErrorTrait
     }
 
     /**
-     * @param       $error
+     * @param       $code
      * @param array $args
      */
-    protected function addError($error, $args = [])
+    protected function addError($code, $args = [])
     {
-        $message = (new ValidateException($error, $args))->getMessage();
-        $this->errors[] = compact('error', 'args', 'message');
+        $message        = (new ValidateException($code, $args))->getMessage();
+        $this->errors[] = compact('code', 'args', 'message');
     }
 
     /**
@@ -58,10 +61,12 @@ trait ErrorTrait
      */
     public function getPreposition($type)
     {
+        $type = strtolower($type);
+
         if (!isset($this->prepositions[$type])) {
 
             // output exception when $this->config['debug'] === true
-            if ($this->config['debug']) {
+            if (($this->cache instanceof Cache) && $this->cache->getDebug()) {
 
                 throw new ValidateException(ValidateException::ERROR_INPUT_IS_NOT_A_VALID_PREPOSITION, $type);
             } else {

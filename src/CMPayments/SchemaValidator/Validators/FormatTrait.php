@@ -1,7 +1,7 @@
-<?php namespace CM\JsonSchemaValidator\Validators;
+<?php namespace CMPayments\SchemaValidator\Validators;
 
-use CM\JsonSchemaValidator\BaseValidator;
-use CM\JsonSchemaValidator\Exceptions\ValidateException;
+use CMPayments\SchemaValidator\BaseValidator;
+use CMPayments\SchemaValidator\Exceptions\ValidateException;
 
 trait FormatTrait
 {
@@ -24,7 +24,7 @@ trait FormatTrait
             case BaseValidator::DATE:
                 if (!$date = $this->validateDateTime($data, 'Y-m-d')) {
 
-                    $this->addError(ValidateException::USER_FORMAT_INVALID_DATE, [$data, $path]);
+                    $this->addError(ValidateException::ERROR_USER_FORMAT_INVALID_DATE, [$data, $path]);
                 }
                 break;
 
@@ -35,7 +35,7 @@ trait FormatTrait
                     && !$this->validateDateTime($data, 'Y-m-d\TH:i:sP')
                     && !$this->validateDateTime($data, 'Y-m-d\TH:i:sO')
                 ) {
-                    $this->addError(ValidateException::USER_FORMAT_INVALID_DATETIME, [$data, $path]);
+                    $this->addError(ValidateException::ERROR_USER_FORMAT_INVALID_DATETIME, [$data, $path]);
                 }
                 break;
 
@@ -43,7 +43,7 @@ trait FormatTrait
             case BaseValidator::EMAIL:
                 if (is_null(filter_var($data, FILTER_VALIDATE_EMAIL, FILTER_NULL_ON_FAILURE))) {
 
-                    $this->addError(ValidateException::USER_FORMAT_INVALID_EMAIL, [$data, $path]);
+                    $this->addError(ValidateException::ERROR_USER_FORMAT_INVALID_EMAIL, [$data, $path]);
                 }
                 break;
 
@@ -51,7 +51,7 @@ trait FormatTrait
             case BaseValidator::TIME:
                 if (!$this->validateDateTime($data, 'H:i:s')) {
 
-                    $this->addError(ValidateException::USER_FORMAT_INVALID_TIME, [$data, $path]);
+                    $this->addError(ValidateException::ERROR_USER_FORMAT_INVALID_TIME, [$data, $path]);
                 }
                 break;
 
@@ -59,7 +59,7 @@ trait FormatTrait
             case BaseValidator::UTC_SECONDS:
                 if (!$this->validateDateTime((string)$data, 'U')) { // U = Seconds since the Unix Epoch
 
-                    $this->addError(ValidateException::USER_FORMAT_INVALID_UTC_SECONDS, [$data, $path]);
+                    $this->addError(ValidateException::ERROR_USER_FORMAT_INVALID_UTC_SECONDS, [$data, $path]);
                 }
                 break;
         }
