@@ -8,18 +8,30 @@
 SchemaValidator is a PHP implementation for validating JSON against a Schema (also a string), the JSON and Schema are both linted with https://github.com/cmpayments/jsonlint.
 This library is optimized for speed and performance.
 
+Installation
+------------
+For a quick install with Composer use:
+
+    $ composer require cmpayments/schemavalidator
+
+Schema Validator for PHP can easily be used within another app if you have a
+[PSR-4](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md)
+autoloader, or it can be installed through [Composer](https://getcomposer.org/).
+
 Usage
 -----
 
 ```
+// use the required classes
+
 use CMPayments\Cache\Cache;
 use CMPayments\Json\Json;
 use CMPayments\SchemaValidator\SchemaValidator;;
+```
 
-/*
- * Example #1 - simple; validate JSON input for syntax errors
- */
+### Example #1 - simple; validate JSON input for syntax errors
 
+```
 $data = '{"testProperty": {"length": 7.0, "superfluousProperty": 12.0}}';
 
 // the constructor only accepts Strings as input
@@ -29,11 +41,11 @@ $json = new Json($data);
 $isValid = $json->validate(); // $isValid = true since we only want to know if $data is valid JSON or not (we are not validating any schema's yet)
 
 var_dump('Example 1:', $isValid); // true
+```
 
-/*
- * Example #2 - advanced; validate JSON input for syntax errors and validate the JSON against a schema
- */
+### Example #2 - advanced; validate JSON input for syntax errors and validate the JSON against a schema
 
+```
 $data   = '{"testProperty": {"length": 7, "superfluousProperty": 12.0}}';
 $schema = '{"type": "object","properties": {"testProperty": {"type": "object","properties": {"length": {"type": "number"}}}},"additionalProperties": true}';
 
@@ -61,13 +73,11 @@ if ($isValid) { // $isValid = true since additional properties are now allowed
 // example data for example 3 & 4
 $data   = '{"testProperty": {"length": 7.0, "superfluousProperty": 12.0}}';
 $schema = '{"type": "object","properties": {"testProperty": {"type": "object","properties": {"length": {"type": "number"}}}},"additionalProperties": false}';
+```
 
-/*
- * Example #3 - simple; if you are not interested if the JSON (string) is valid or not (since the input is an object)
- *
- * SchemaValidator
- */
+### Example #3 - Simple SchemaValidator example; if you are not interested if the JSON (string) is valid or not (since the input is an object)
 
+```
 // SchemaValidator constructor:
 // first argument is the JSON input and only accepts it when it is an object (mandatory)
 // second argument is the Schema input and only accepts it when it is an object (mandatory)
@@ -91,13 +101,11 @@ try {
 
     var_dump('Example 3:', $e->getMessage());
 }
+```
 
-/*
- * Example #4 - advanced; if you are not interested if the JSON (string) is valid or not (since the input is an object) but you want to specify some caching options
- *
- * SchemaValidator
- */
+### Example #4 - Advanced SchemaValidator example; if you are not interested if the JSON (string) is valid or not (since the input is an object) but you want to specify some caching options
 
+```
 try {
 
     // create new Cache object
@@ -119,12 +127,13 @@ try {
 
     var_dump('Example 4: ', $validator->isValid(), $e->getMessage()); // false, The cache directory 'absolute/path/to/your/cache/directory' is not writable
 }
+```
 
-/*
- * Other examples
- */
+### Other examples
 
-// Example; test input when input is an array
+#### Example; test input when input is an array
+
+```
 try {
 
     $data   = ["length" => 7.0, "superfluousProperty" => 12.0];
@@ -138,8 +147,11 @@ try {
 
     var_dump('Example 5', $e->getMessage());
 }
+```
 
-// Example; test input when input is a boolean
+#### Example; test input when input is a boolean
+
+```
 try {
 
     $data   = true;
@@ -153,8 +165,11 @@ try {
 
     var_dump('Example 6:', $e->getMessage());
 }
+```
 
-// Example; test input when input is a number
+#### Example; test input when input is a number (float)
+
+```
 try {
 
     $data   = 1.4;
@@ -168,8 +183,11 @@ try {
 
     var_dump('Example 7:', $e->getMessage());
 }
+```
 
-// Example; test input when input is a number
+#### Example; test input when input is a number (integer)
+
+```
 try {
 
     $data   = 22;
@@ -183,8 +201,11 @@ try {
 
     var_dump('Example 8:', $e->getMessage());
 }
+```
 
-// Example; test input when input is a string
+#### Example; test input when input is a string
+
+```
 try {
 
     $data   = 'test12345';
@@ -203,16 +224,6 @@ try {
 $isValid = (new Json('true'))->validate(null, $errors);
 (var_dump('Example 10: ', $isValid, $errors));
 ```
-
-Installation
-------------
-For a quick install with Composer use:
-
-    $ composer require cmpayments/schemavalidator
-
-Schema Validator for PHP can easily be used within another app if you have a
-[PSR-4](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md)
-autoloader, or it can be installed through [Composer](https://getcomposer.org/).
 
 Requirements
 ------------
@@ -247,4 +258,4 @@ Boy Wijnmaalen - <boy.wijnmaalen@cmtelecom.com> - <https://twitter.com/boywijnma
 License
 -------
 
-JSON Lint is licensed under the MIT License - see the LICENSE file for details
+Schema Validator is licensed under the MIT License - see the LICENSE file for details
