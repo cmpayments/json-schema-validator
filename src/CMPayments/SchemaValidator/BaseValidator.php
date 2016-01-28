@@ -7,6 +7,7 @@ use CMPayments\SchemaValidator\Validators\ErrorTrait;
 use CMPayments\SchemaValidator\Validators\FormatTrait;
 use CMPayments\SchemaValidator\Validators\NumberTrait;
 use CMPayments\SchemaValidator\Validators\StringTrait;
+use CMPayments\SchemaValidator\Validators\RegexTrait;
 
 class BaseValidator
 {
@@ -16,6 +17,7 @@ class BaseValidator
     use FormatTrait;
     use NumberTrait;
     use StringTrait;
+    use RegexTrait;
 
     const TYPE   = 'type';
     const FORMAT = 'format';

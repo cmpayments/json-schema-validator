@@ -1,4 +1,5 @@
-<?php namespace CMPayments\tests\SchemaValidator\Tests;
+<?php 
+namespace CMPayments\tests\SchemaValidator\Tests;
 
 use CMPayments\Json\Exceptions\JsonException;
 use CMPayments\Json\Json;
