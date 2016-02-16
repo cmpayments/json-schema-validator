@@ -183,7 +183,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
             // check for $schema->enum
             $this->validateEnum($data, $schema, $path);
 
-            // @TODO; check for $schema->pattern (regex)
+            // check for $schema->pattern (regex)
             $this->validateRegex($data, $schema, $path);
 
             // @TODO; check for $schema->oneOf { format: "" }, { format: "" }
