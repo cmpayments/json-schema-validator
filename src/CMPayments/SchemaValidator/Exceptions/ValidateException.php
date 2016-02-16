@@ -36,6 +36,11 @@ class ValidateException extends BaseException
     const ERROR_USER_NUMBER_MAXIMUM_CHECK                     = 141;
     const ERROR_USER_STRING_MINIMUM_CHECK                     = 150;
     const ERROR_USER_STRING_MAXIMUM_CHECK                     = 151;
+    const ERROR_USER_REGEX_NOMATCH                            = 160;
+    const ERROR_USER_REGEX_DATA_NOT_SCALAR                    = 161;
+    const ERROR_USER_REGEX_PATTERN_NOT_VALID                  = 162;
+
+
 
     protected $messages = [
         self::ERROR_INPUT_IS_NOT_A_OBJECT                         => '\'%s\' is not an object but %s \'%s\'%s',
@@ -71,6 +76,10 @@ class ValidateException extends BaseException
         self::ERROR_USER_NUMBER_MINIMUM_CHECK                     => 'The minimum value for property \'%s\' is \'%d\' (current value \'%d\')',
         self::ERROR_USER_NUMBER_MAXIMUM_CHECK                     => 'The maximum value for property \'%s\' is \'%d\' (current value \'%d\')',
         self::ERROR_USER_STRING_MINIMUM_CHECK                     => 'The minimum string length for property \'%s\' is \'%d\' characters (current string length with value \'%s\' is \'%d\' characters)',
-        self::ERROR_USER_STRING_MAXIMUM_CHECK                     => 'The maximum string length for property \'%s\' is \'%d\' characters (current string length with value \'%s\' is \'%d\' characters)'
+        self::ERROR_USER_STRING_MAXIMUM_CHECK                     => 'The maximum string length for property \'%s\' is \'%d\' characters (current string length with value \'%s\' is \'%d\' characters)',
+        self::ERROR_USER_REGEX_NOMATCH                            => 'The property \'%s\' does not match the regular expression \'%s\'',
+        self::ERROR_USER_REGEX_DATA_NOT_SCALAR                    => 'The property \'%s\' should be a scalar to be able to validate it with a regular expression',
+        self::ERROR_USER_REGEX_PATTERN_NOT_VALID                  => 'The regular expression \'%s\' for property \'%s\' is not a valid regular expression',
+
     ];
 }
