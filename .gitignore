@@ -2,3 +2,5 @@
 vendor/
 public/
 storage/cache/
+/nbproject/private/
+/nbproject

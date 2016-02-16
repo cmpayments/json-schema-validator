@@ -164,7 +164,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
 
         // append /$property to $path
         $path .= '/' . $property;
-
+		
         // if $type is an object
         if ($type === BaseValidator::OBJECT) {
 
@@ -183,8 +183,8 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
             // check for $schema->enum
             $this->validateEnum($data, $schema, $path);
 
-            // @TODO; check for $schema->pattern (regex)
-            //$this->validatePattern($data, $schema, $path);
+            // check for $schema->pattern (regex)
+            $this->validateRegex($data, $schema, $path);
 
             // @TODO; check for $schema->oneOf { format: "" }, { format: "" }
             //$this->validateOneOf($data, $schema, $path);
