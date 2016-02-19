@@ -1,6 +1,7 @@
 <?php namespace CMPayments\SchemaValidator;
 
 use CMPayments\Cache\Cache;
+use CMPayments\Json\Json;
 use CMPayments\SchemaValidator\Exceptions\ValidateException;
 
 /**
@@ -663,8 +664,8 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
                 if (in_array($type, [BaseValidator::STRING])) {
 
                     $data = str_replace("\n", '', $data);
-                    $data = preg_replace('/\s+/', '', $data);
-                    $data = (strlen($data) < 25) ?: substr($data, 0, 25);
+                    $data = preg_replace( "/\r|\n/", '', $data);
+                    $data = (strlen($data) < 25) ? $data : substr($data, 0, 25) . ' [...]';
                 }
 
                 $params[] = $data;
