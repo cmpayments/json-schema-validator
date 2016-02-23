@@ -1,46 +1,37 @@
 <?php namespace CMPayments\tests\SchemaValidator\Tests;
 
 use CMPayments\SchemaValidator\Exceptions\ValidateException;
+use CMPayments\SchemaValidator\SchemaValidator;
 
 class SchemaRegexTest extends BaseTest
 {
-
     const INVALID_SCHEMA_PATTERN_STRING = '{"type": "object","properties": {"name": {"type": "string","pattern" : "(*92190(***(0[a-z]+"}}}';
     const VALID_SCHEMA_PATTERN_STRING   = '{"type": "object","properties": {"name": {"type": "string","pattern" : "[a-z]+"}}}';
     const DATA_VALID_STRING             = '{"name" : "sjaak"}';
     const DATA_INVALID_STRING           = '{"name" : "sjaa1234k"}';
 
     /**
-     * Dirty setUp with
-     */
-    public function setUp()
-    {
-        set_error_handler(function ($severity, $message, $file, $line) {
-            if (!(error_reporting() & $severity)) {
-                return;
-            }
-            throw new ErrorException($message, $severity, $severity, $file, $line);
-        });
-    }
-
-    /**
      * Verify a bad regex
-     *
-     * @expectedException \Error
      */
     public function testBadRegexExceptions()
     {
-
+        // ValidateException::ERROR_USER_REGEX_ERROR_LAST_ERROR_OCCURRED
         $exceptions = [
-
-            ValidateException::ERROR_USER_REGEX_PATTERN_NOT_VALID => [
+            ValidateException::ERROR_USER_REGEX_ERROR_LAST_ERROR_OCCURRED => [
                 [
                     json_decode('{"username": "rob"}'),
                     json_decode('{"type": "object", "properties": {"username": {"type": "string", "pattern" : "--[92929{{))"}}}'),
+                ],
+                [
+                    json_decode('{"username": "rob"}'),
+                    json_decode('{"type": "object", "properties": {"username": {"type": "string", "pattern" : "[9JDJ(JKlk3ko93030???jerjhu2/22/JJSJ"}}}'),
                 ]
-            ],
-        ];
+            ]
 
+            // @TODO; write tests for ValidateException::ERROR_USER_REGEX_PREG_LAST_ERROR_OCCURRED
+            // @TODO; write tests for ValidateException::ERROR_USER_REGEX_UNKNOWN_ERROR_OCCURRED
+            // @TODO; write tests for ValidateException::ERROR_USER_REGEX_GENERAL_ERROR_OCCURRED
+        ];
         $this->executeExceptionValidation($exceptions, false);
     }
 
@@ -49,9 +40,8 @@ class SchemaRegexTest extends BaseTest
      */
     public function testRegexExceptions()
     {
-
         $exceptions = [
-            ValidateException::ERROR_USER_REGEX_NOMATCH => [
+            ValidateException::ERROR_USER_REGEX_NO_MATCH => [
                 [
                     json_decode('{"username": "rob"}'),
                     json_decode('{"type": "object", "properties": {"username": {"type": "string", "pattern" : "[aaaa]"}}}')
@@ -70,11 +60,13 @@ class SchemaRegexTest extends BaseTest
         $this->executeExceptionValidation($exceptions, false);
     }
 
-
+    /**
+     * Successful test
+     */
     public function testRegexMatch()
     {
         $schema    = '{"type": "object", "properties": {"zipcode": {"type": "string", "pattern" : "[0-9]{4}[a-zA-Z]{2}"}}}';
-        $validator = new \CMPayments\SchemaValidator\SchemaValidator(json_decode('{"zipcode" : "48118EW"}'), json_decode($schema));
+        $validator = new SchemaValidator(json_decode('{"zipcode" : "48118EW"}'), json_decode($schema));
         $isValid   = $validator->isValid();
         $this->assertTrue($isValid);
     }
