@@ -18,6 +18,5 @@ class JsonException extends BaseException
         self::ERROR_INPUT_IS_NOT_OF_TYPE_STRING => '\'%s\' is not of type \'String\' but of type \'%s\'',
         self::ERROR_INPUT_IS_NOT_VALID_JSON     => '\'%s\' is not valid JSON%s',
         self::ERROR_INPUT_IS_OF_TYPE_STRING_BUT_EMPTY => '\'%s\' cannot be empty'
-
     ];
 }
