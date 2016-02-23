@@ -2,6 +2,12 @@
 
 use CMPayments\SchemaValidator\Exceptions\ValidateException;
 
+/**
+ * Class EnumTrait
+ *
+ * @package CMPayments\SchemaValidator\Validators
+ * @Author  Boy Wijnmaalen <boy.wijnmaalen@cmtelecom.com>
+ */
 trait EnumTrait
 {
     /**

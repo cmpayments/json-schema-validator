@@ -3,6 +3,13 @@
 use CMPayments\SchemaValidator\BaseValidator;
 use CMPayments\SchemaValidator\Exceptions\ValidateException;
 
+/**
+ * Class RegexTrait
+ *
+ * @package CMPayments\SchemaValidator\Validators
+ * @Author  Rob Theeuwes <Rob.Theeuwes@cm.nl>
+ * @Author  Boy Wijnmaalen <boy.wijnmaalen@cmtelecom.com>
+ */
 trait RegexTrait
 {
     /**

@@ -1,3 +1,15 @@
-### 1.0.0 (2016-01-??)
+## Schema Validator
 
-  * Initial release
+### Todo
+- write some tests in SchemaRegexTest (look for @TODO)
+
+
+### Important
+-
+
+### changelog [v0.0.5] – ??/02/2016
+-
+
+### changelog [v0.0.4] – 23/02/2016
+- added (and improvement) a regex trait
+- added documentation to all files
