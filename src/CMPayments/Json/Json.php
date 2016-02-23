@@ -35,6 +35,11 @@ class Json
     private $isValid = false;
 
     /**
+     * @var bool
+     */
+    private $validatedInput = null;
+
+    /**
      * Json constructor.
      *
      * @param string $input
@@ -67,12 +72,15 @@ class Json
             }
 
             // validate $this->input
-            $input = $this->validateAndConvertData($this->input, self::INPUT, $cache);
+            if (empty($this->validatedInput)) {
+
+                $this->validatedInput = $this->validateAndConvertData($this->input, self::INPUT, $cache);
+            }
 
             if (!is_null($this->schema)) {
 
                 // validate $input against $this->schema
-                $validator = new SchemaValidator($input, $this->schema, $cache);
+                $validator = new SchemaValidator($this->validatedInput, $this->schema, $cache);
 
                 // check if there are errors, if so store them
                 if (!$validator->isValid()) {
@@ -86,9 +94,8 @@ class Json
                 }
 
                 // if $this->schema->type is other than object, decode it again but this time with $assoc = true
-                $this->input = ($this->schema->type === BaseValidator::OBJECT) ? $input : $this->decodeJSON($this->input, self::INPUT, true);
+                $this->input = ($this->schema->type === BaseValidator::OBJECT) ? $this->validatedInput : $this->decodeJSON($this->input, self::INPUT, true);
             }
-
         } catch (\Exception $e) {
 
             // convert Exception to array
@@ -99,10 +106,7 @@ class Json
                 if (!in_array($sourceProperty->name, ['messages', 'severity', 'xdebug_message'])) {
 
                     $sourceProperty->setAccessible(true);
-                    $destination->
-                    {
-                    $sourceProperty->getName()
-                    } = $sourceProperty->getValue($e);
+                    $destination->{$sourceProperty->getName()} = $sourceProperty->getValue($e);
                 }
             }
 
@@ -201,7 +205,8 @@ class Json
      * @return mixed
      * @throws JsonException
      */
-    private function decodeJSON($data, $type, $assoc = false) {
+    private function decodeJSON($data, $type, $assoc = false)
+    {
         $result = json_decode($data, $assoc);
 
         if (empty($result) && (json_last_error() !== JSON_ERROR_NONE)) {
