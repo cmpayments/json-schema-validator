@@ -4,6 +4,12 @@ use CMPayments\Cache\Cache;
 use CMPayments\SchemaValidator\SchemaValidator;
 use CMPayments\SchemaValidator\Exceptions\ValidateException;
 
+/**
+ * Class BaseTest
+ *
+ * @package CMPayments\tests\SchemaValidator\Tests
+ * @Author  Boy Wijnmaalen <boy.wijnmaalen@cmtelecom.com>
+ */
 abstract class BaseTest extends \PHPUnit_Framework_TestCase
 {
     const CONFIG_DEBUG_TRUE_CACHE_DIR_MISSING  = ['debug' => true, 'directory' => __DIR__ . '/non-existent/'];

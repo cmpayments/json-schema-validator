@@ -2,6 +2,12 @@
 
 use CMPayments\SchemaValidator\Exceptions\ValidateException;
 
+/**
+ * Class ArrayTrait
+ *
+ * @package CMPayments\SchemaValidator\Validators
+ * @Author  Boy Wijnmaalen <boy.wijnmaalen@cmtelecom.com>
+ */
 trait ArrayTrait
 {
     /**

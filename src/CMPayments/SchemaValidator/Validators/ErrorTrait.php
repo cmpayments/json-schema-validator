@@ -4,6 +4,12 @@ use CMPayments\Cache\Cache;
 use CMPayments\SchemaValidator\BaseValidator;
 use CMPayments\SchemaValidator\Exceptions\ValidateException;
 
+/**
+ * Class ErrorTrait
+ *
+ * @package CMPayments\SchemaValidator\Validators
+ * @Author  Boy Wijnmaalen <boy.wijnmaalen@cmtelecom.com>
+ */
 trait ErrorTrait
 {
     protected $errors = [];

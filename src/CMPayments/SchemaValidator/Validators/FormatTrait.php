@@ -3,6 +3,12 @@
 use CMPayments\SchemaValidator\BaseValidator;
 use CMPayments\SchemaValidator\Exceptions\ValidateException;
 
+/**
+ * Class FormatTrait
+ *
+ * @package CMPayments\SchemaValidator\Validators
+ * @Author  Boy Wijnmaalen <boy.wijnmaalen@cmtelecom.com>
+ */
 trait FormatTrait
 {
     /**

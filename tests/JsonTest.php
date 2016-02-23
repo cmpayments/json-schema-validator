@@ -4,6 +4,12 @@ use CMPayments\Json\Exceptions\JsonException;
 use CMPayments\Json\Json;
 use CMPayments\JsonLint\Exceptions\ParseException;
 
+/**
+ * Class JsonTest
+ *
+ * @package CMPayments\tests\SchemaValidator\Tests
+ * @Author  Boy Wijnmaalen <boy.wijnmaalen@cmtelecom.com>
+ */
 class JsonTest extends BaseTest
 {
     /**

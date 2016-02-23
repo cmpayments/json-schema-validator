@@ -2,6 +2,12 @@
 
 use CMPayments\SchemaValidator\Exceptions\ValidateException;
 
+/**
+ * Class NumberTrait
+ *
+ * @package CMPayments\SchemaValidator\Validators
+ * @Author  Boy Wijnmaalen <boy.wijnmaalen@cmtelecom.com>
+ */
 trait NumberTrait
 {
     public function validateNumber($data, $schema, $path)

@@ -9,6 +9,13 @@ use CMPayments\SchemaValidator\Validators\NumberTrait;
 use CMPayments\SchemaValidator\Validators\StringTrait;
 use CMPayments\SchemaValidator\Validators\RegexTrait;
 
+/**
+ * Class BaseValidator
+ *
+ * @package CMPayments\SchemaValidator
+ * @Author  Boy Wijnmaalen <boy.wijnmaalen@cmtelecom.com>
+ * @Author  Rob Theeuwes <Rob.Theeuwes@cm.nl>
+ */
 class BaseValidator
 {
     use ErrorTrait;

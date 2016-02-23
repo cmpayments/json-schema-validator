@@ -1,5 +1,12 @@
 <?php namespace CMPayments\SchemaValidator\Exceptions;
 
+/**
+ * Class ValidateException
+ *
+ * @package CMPayments\SchemaValidator\Exceptions
+ * @Author  Boy Wijnmaalen <boy.wijnmaalen@cmtelecom.com>
+ * @Author  Rob Theeuwes <Rob.Theeuwes@cm.nl>
+ */
 class ValidateException extends BaseException
 {
     const PREG_INTERNAL_ERROR        = 'An internal PCRE error occurred';
