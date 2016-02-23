@@ -3,6 +3,7 @@
 use CMPayments\Cache\Cache;
 use CMPayments\SchemaValidator\SchemaValidator;
 use CMPayments\SchemaValidator\Exceptions\ValidateException;
+use CMPayments\SchemaValidator\Exceptions\ValidateSchemaException;
 
 /**
  * Class BaseTest
@@ -53,10 +54,22 @@ abstract class BaseTest extends \PHPUnit_Framework_TestCase
         try {
 
             $this->assertFalse((new SchemaValidator($falseValue, json_decode($schema)))->isValid(), $msg);
-        } catch (ValidateException $e) {
+        } catch (\Exception $e) {
 
-            // will always fail
-            $this->assertFalse('exception was thrown', $e->getMessage() . vsprintf(' with values Schema \'%s\' and Data \'%s\'', [$schema, $data]));
+            if ($e instanceof ValidateException OR $e instanceof ValidateSchemaException) {
+
+                // will always fail
+                $this->assertFalse('exception was thrown', $e->getMessage() . vsprintf(' with values Schema \'%s\' and Data \'%s\'', [$schema, $data]));
+            } else {
+
+                $this->assertTrue(false, vsprintf(
+                    'Exception should be of type \'%s\' but got type \'%s\'',
+                    [
+                        implode('\', \'', [ValidateException::class, ValidateSchemaException::class]),
+                        get_class($e)
+                    ]
+                ));
+            }
         }
     }
 
@@ -68,7 +81,6 @@ abstract class BaseTest extends \PHPUnit_Framework_TestCase
      */
     protected function executeExceptionValidation(array $exceptions, $asSchema = true)
     {
-
         // delete cache directory for optimal testing
         exec('rm -rf ' . (new Cache)->getDirectory() . '*');
 
@@ -134,13 +146,10 @@ abstract class BaseTest extends \PHPUnit_Framework_TestCase
             }
         } catch (ValidateException $e) {
 
-            if ($asSchema) {
+            $this->assertFalse('exception was thrown were no exception was not expected', vsprintf('The following Exception \'%s\' was thrown when validating \'%s\' but no Exception was expected', [$exception, $data]));
+        } catch (ValidateSchemaException $e) {
 
-                $this->assertEquals($exception, $e->getCode(), vsprintf('When validating Exception \'%s\' with Data \'%s\'', [$exception, $data]));
-            } else {
-
-                $this->assertFalse('exception was thrown were no exception was not expected', vsprintf('The following Exception \'%s\' was thrown when validating \'%s\' but no Exception was expected', [$exception, $data]));
-            }
+            $this->assertEquals($exception, $e->getCode(), vsprintf('When validating Exception \'%s\' with Data \'%s\'', [$exception, $data]));
         }
     }
 }
