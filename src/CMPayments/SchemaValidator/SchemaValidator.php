@@ -3,6 +3,7 @@
 use CMPayments\Cache\Cache;
 use CMPayments\Json\Json;
 use CMPayments\SchemaValidator\Exceptions\ValidateException;
+use CMPayments\SchemaValidator\Exceptions\ValidateSchemaException;
 
 /**
  * Class SchemaValidator
@@ -44,7 +45,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
      * @param            $schema
      * @param Cache|null $cache
      *
-     * @throws ValidateException
+     * @throws ValidateSchemaException
      */
     public function __construct($data, $schema, Cache $cache = null)
     {
@@ -59,7 +60,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
         // check if $schema is an object to begin with
         if (!is_object($schema) || (is_callable($schema) && ($schema instanceof \Closure))) {
 
-            throw new ValidateException(ValidateException::ERROR_INPUT_IS_NOT_A_OBJECT, ['Schema', $this->getPreposition(gettype($schema)), gettype($schema), '']);
+            throw new ValidateSchemaException(ValidateSchemaException::ERROR_INPUT_IS_NOT_A_OBJECT, ['Schema', $this->getPreposition(gettype($schema)), gettype($schema), '']);
         }
 
         if (empty($cache->getFilename())) {
@@ -202,7 +203,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
      * @param null $path
      *
      * @return mixed
-     * @throws ValidateException
+     * @throws ValidateSchemaException
      */
     public function validateSchema($schema, $path = null)
     {
@@ -217,7 +218,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
         // check if the given schema is not empty
         if (empty((array)$schema)) {
 
-            throw new ValidateException(ValidateException::ERROR_SCHEMA_CANNOT_BE_EMPTY_IN_PATH, $path);
+            throw new ValidateSchemaException(ValidateSchemaException::ERROR_SCHEMA_CANNOT_BE_EMPTY_IN_PATH, $path);
         }
 
         // validate mandatory $schema properties
@@ -232,7 +233,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
             // check if the given schema is not empty
             if (empty((array)$schema->properties)) {
 
-                throw new ValidateException(ValidateException::ERROR_SCHEMA_CANNOT_BE_EMPTY_IN_PATH, ($path . '/properties'));
+                throw new ValidateSchemaException(ValidateSchemaException::ERROR_SCHEMA_CANNOT_BE_EMPTY_IN_PATH, ($path . '/properties'));
             }
 
             foreach ($schema->properties as $property => $childSchema) {
@@ -242,14 +243,14 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
                 // when an object key is empty it becomes '_empty_' by json_decode(), catch it since this is not valid
                 if ($property === '_empty_') {
 
-                    throw new ValidateException(ValidateException::ERROR_EMPTY_KEY_NOT_ALLOWED_IN_OBJECT, $subPath);
+                    throw new ValidateSchemaException(ValidateSchemaException::ERROR_EMPTY_KEY_NOT_ALLOWED_IN_OBJECT, $subPath);
                 }
 
                 // check if $childSchema is an object to begin with
                 if (!is_object($childSchema)) {
 
-                    throw new ValidateException(
-                        ValidateException::ERROR_INPUT_IS_NOT_A_OBJECT,
+                    throw new ValidateSchemaException(
+                        ValidateSchemaException::ERROR_INPUT_IS_NOT_A_OBJECT,
                         [
                             'Schema',
                             $this->getPreposition(gettype($childSchema)),
@@ -359,7 +360,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
      * @param bool|false $mandatory
      *
      * @return mixed
-     * @throws ValidateException
+     * @throws ValidateSchemaException
      */
     private function validateSchemaProperties($input, $schema, $path, $mandatory = false)
     {
@@ -370,7 +371,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
             // when $mandatory is true, check if a certain $property isset
             if ($mandatory && !isset($schema->$property)) {
 
-                throw new ValidateException(ValidateException::ERROR_SCHEMA_PROPERTY_NOT_DEFINED, [$property, $path]);
+                throw new ValidateSchemaException(ValidateSchemaException::ERROR_SCHEMA_PROPERTY_NOT_DEFINED, [$property, $path]);
             }
 
             // check if $property is of a certain type
@@ -380,8 +381,8 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
 
                     $actualType = gettype($schema->$property);
 
-                    throw new ValidateException(
-                        ValidateException::ERROR_SCHEMA_PROPERTY_TYPE_NOT_VALID,
+                    throw new ValidateSchemaException(
+                        ValidateSchemaException::ERROR_SCHEMA_PROPERTY_TYPE_NOT_VALID,
                         [$path, $property, $this->getPreposition($expectedType), $expectedType, $this->getPreposition($actualType), $actualType]
                     );
                 }
@@ -406,7 +407,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
      * @param $property
      * @param $path
      *
-     * @throws ValidateException
+     * @throws ValidateSchemaException
      */
     private function validateSchemaPropertyValue($schema, $property, $path)
     {
@@ -436,8 +437,8 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
 
             $count = count($expected);
 
-            throw new ValidateException(
-                ValidateException::ERROR_SCHEMA_PROPERTY_VALUE_IS_NOT_VALID,
+            throw new ValidateSchemaException(
+                ValidateSchemaException::ERROR_SCHEMA_PROPERTY_VALUE_IS_NOT_VALID,
                 [$schema->$property, $path, $property, $this->conjugationObject($count, '', 'any of '), $this->conjugationObject($count), implode('\', \'', $expected)]
             );
         }
@@ -451,20 +452,20 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
      * @param $maxProperty
      * @param $path
      *
-     * @throws ValidateException
+     * @throws ValidateSchemaException
      */
     private function validateSchemaMinMaxProperties($schema, $minProperty, $maxProperty, $path)
     {
         // both $schema->$maxProperty cannot be zero
         if (isset($schema->$maxProperty) && ($schema->$maxProperty === 0)) {
 
-            throw new ValidateException(ValidateException::ERROR_SCHEMA_MAX_PROPERTY_CANNOT_NOT_BE_ZERO, [$path, $maxProperty]);
+            throw new ValidateSchemaException(ValidateSchemaException::ERROR_SCHEMA_MAX_PROPERTY_CANNOT_NOT_BE_ZERO, [$path, $maxProperty]);
         }
 
         if (isset($schema->$minProperty) && isset($schema->$maxProperty) && ($schema->$minProperty > $schema->$maxProperty)) {
 
-            throw new ValidateException(
-                ValidateException::ERROR_SCHEMA_PROPERTY_MIN_NOT_BIGGER_THAN_MAX,
+            throw new ValidateSchemaException(
+                ValidateSchemaException::ERROR_SCHEMA_PROPERTY_MIN_NOT_BIGGER_THAN_MAX,
                 [$path, $minProperty, $schema->$minProperty, $path, $maxProperty, $schema->$maxProperty]
             );
         }
@@ -477,7 +478,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
      * @param $schema
      * @param $path
      *
-     * @throws ValidateException
+     * @throws ValidateSchemaException
      */
     private function validateSchemaRequiredAgainstProperties($schema, $path)
     {
@@ -489,7 +490,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
             $type        = gettype($schema->required);
             $preposition = $this->getPreposition($type);
 
-            throw new ValidateException(ValidateException::ERROR_SCHEMA_PROPERTY_REQUIRED_MUST_BE_AN_ARRAY, [$requiredPath, $preposition, $type]);
+            throw new ValidateSchemaException(ValidateSchemaException::ERROR_SCHEMA_PROPERTY_REQUIRED_MUST_BE_AN_ARRAY, [$requiredPath, $preposition, $type]);
         }
 
         // check if the $schema->required property contains fields that have not been defined in $schema->properties
@@ -498,8 +499,8 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
             $count = count($missing);
             $verb  = $this->conjugationToBe($count);
 
-            throw new ValidateException(
-                ValidateException::ERROR_SCHEMA_REQUIRED_AND_PROPERTIES_MUST_MATCH,
+            throw new ValidateSchemaException(
+                ValidateSchemaException::ERROR_SCHEMA_REQUIRED_AND_PROPERTIES_MUST_MATCH,
                 [$this->conjugationObject($count), implode('\', \'', array_flip($missing)), $verb, $requiredPath, $verb, $path]
             );
         }
@@ -511,7 +512,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
      * @param  $schema
      *
      * @return mixed
-     * @throws ValidateException
+     * @throws ValidateSchemaException
      */
     private function getReference($schema)
     {
@@ -536,7 +537,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
         // not a local reference nor a remote reference
         if (is_null($referencedSchema)) {
 
-            throw new ValidateException(ValidateException::ERROR_INVALID_REFERENCE, $schema->{'$ref'});
+            throw new ValidateSchemaException(ValidateSchemaException::ERROR_INVALID_REFERENCE, $schema->{'$ref'});
         }
 
         // cache the result
@@ -560,14 +561,14 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
      * @param $schema
      *
      * @return mixed
-     * @throws ValidateException
+     * @throws ValidateSchemaException
      */
     private function getLocalReference($schema)
     {
         // check if there is at least one local reference defined to match it to
         if (!isset($this->rootSchema->definitions) || (count($definitions = get_object_vars($this->rootSchema->definitions)) === 0)) {
 
-            throw new ValidateException(ValidateException::ERROR_NO_LOCAL_DEFINITIONS_HAVE_BEEN_DEFINED);
+            throw new ValidateSchemaException(ValidateSchemaException::ERROR_NO_LOCAL_DEFINITIONS_HAVE_BEEN_DEFINED);
         }
 
         // check if the referenced schema is locally defined
@@ -576,7 +577,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
 
         if (!in_array($reference, $definitionKeys)) {
 
-            throw new ValidateException(ValidateException::ERROR_CHECK_IF_LOCAL_DEFINITIONS_EXISTS, [$schema->{'$ref'}, implode('\', ', $definitionKeys)]);
+            throw new ValidateSchemaException(ValidateSchemaException::ERROR_CHECK_IF_LOCAL_DEFINITIONS_EXISTS, [$schema->{'$ref'}, implode('\', ', $definitionKeys)]);
         }
 
         return $this->rootSchema->definitions->$reference;
@@ -588,14 +589,14 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
      * @param $schema
      *
      * @return mixed
-     * @throws ValidateException
+     * @throws ValidateSchemaException
      */
     private function getRemoteReference($schema)
     {
         // check if the curl_init exists
         if (!function_exists('curl_init')) {
 
-            throw new ValidateException(ValidateException::ERROR_CURL_NOT_INSTALLED);
+            throw new ValidateSchemaException(ValidateSchemaException::ERROR_CURL_NOT_INSTALLED);
         }
 
         $ch = curl_init();
@@ -614,12 +615,12 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
 
         if (isset($info['http_code']) && (($info['http_code'] < 200) || ($info['http_code'] > 207))) {
 
-            throw new ValidateException(ValidateException::ERROR_REMOTE_REFERENCE_DOES_NOT_EXIST, $schema->{'$ref'});
+            throw new ValidateSchemaException(ValidateSchemaException::ERROR_REMOTE_REFERENCE_DOES_NOT_EXIST, $schema->{'$ref'});
         }
 
         if (empty($response)) {
 
-            throw new ValidateException(ValidateException::ERROR_NO_JSON_SCHEMA_WAS_FOUND, $schema->{'$ref'});
+            throw new ValidateSchemaException(ValidateSchemaException::ERROR_NO_JSON_SCHEMA_WAS_FOUND, $schema->{'$ref'});
         }
 
         $json = new Json($response);
