@@ -3,6 +3,13 @@
 use CMPayments\SchemaValidator\Exceptions\ValidateException;
 use CMPayments\SchemaValidator\SchemaValidator;
 
+/**
+ * Class SchemaRegexTest
+ *
+ * @package CMPayments\tests\SchemaValidator\Tests
+ * @Author  Rob Theeuwes <Rob.Theeuwes@cm.nl>
+ * @Author  Boy Wijnmaalen <boy.wijnmaalen@cmtelecom.com>
+ */
 class SchemaRegexTest extends BaseTest
 {
     const INVALID_SCHEMA_PATTERN_STRING = '{"type": "object","properties": {"name": {"type": "string","pattern" : "(*92190(***(0[a-z]+"}}}';

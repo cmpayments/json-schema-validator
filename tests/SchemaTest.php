@@ -2,6 +2,12 @@
 
 use CMPayments\SchemaValidator\Exceptions\ValidateException;
 
+/**
+ * Class SchemaTest
+ *
+ * @package CMPayments\tests\SchemaValidator\Tests
+ * @Author  Boy Wijnmaalen <boy.wijnmaalen@cmtelecom.com>
+ */
 class SchemaTest extends BaseTest
 {
     /**

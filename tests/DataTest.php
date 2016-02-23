@@ -4,6 +4,12 @@ use CMPayments\Cache\Cache;
 use CMPayments\SchemaValidator\Exceptions\ValidateException;
 use CMPayments\SchemaValidator\SchemaValidator;
 
+/**
+ * Class DataTest
+ *
+ * @package CMPayments\tests\SchemaValidator\Tests
+ * @Author  Boy Wijnmaalen <boy.wijnmaalen@cmtelecom.com>
+ */
 class DataTest extends BaseTest
 {
     /**

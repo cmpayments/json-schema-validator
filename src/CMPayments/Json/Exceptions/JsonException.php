@@ -2,6 +2,12 @@
 
 use CMPayments\SchemaValidator\Exceptions\BaseException;
 
+/**
+ * Class JsonException
+ *
+ * @package CMPayments\Json\Exceptions
+ * @Author  Boy Wijnmaalen <boy.wijnmaalen@cmtelecom.com>
+ */
 class JsonException extends BaseException
 {
     const ERROR_INPUT_IS_NOT_OF_TYPE_STRING       = 1;

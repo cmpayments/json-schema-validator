@@ -1,5 +1,11 @@
 <?php namespace CMPayments\SchemaValidator\Exceptions;
 
+/**
+ * Class BaseException
+ *
+ * @package CMPayments\SchemaValidator\Exceptions
+ * @Author  Boy Wijnmaalen <boy.wijnmaalen@cmtelecom.com>
+ */
 class BaseException extends \ErrorException
 {
 

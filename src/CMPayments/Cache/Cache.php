@@ -2,6 +2,12 @@
 
 use CMPayments\Cache\Exceptions\CacheException;
 
+/**
+ * Class Cache
+ *
+ * @package CMPayments\Cache
+ * @Author  Boy Wijnmaalen <boy.wijnmaalen@cmtelecom.com>
+ */
 class Cache
 {
     /**

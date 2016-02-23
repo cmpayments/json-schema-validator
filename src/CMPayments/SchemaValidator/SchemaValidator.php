@@ -7,8 +7,9 @@ use CMPayments\SchemaValidator\Exceptions\ValidateException;
 /**
  * Class SchemaValidator
  *
- * @Author  Boy Wijnmaalen <boy.wijnmaalen@cmtelecom.com>
  * @package CMPayments\Validator
+ * @Author  Boy Wijnmaalen <boy.wijnmaalen@cmtelecom.com>
+ * @Author  Rob Theeuwes <Rob.Theeuwes@cm.nl>
  */
 class SchemaValidator extends BaseValidator implements ValidatorInterface
 {

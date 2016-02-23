@@ -2,6 +2,12 @@
 
 use CMPayments\SchemaValidator\Exceptions\BaseException;
 
+/**
+ * Class CacheException
+ *
+ * @package CMPayments\Cache\Exceptions
+ * @Author  Boy Wijnmaalen <boy.wijnmaalen@cmtelecom.com>
+ */
 class CacheException extends BaseException
 {
     const ERROR_CACHE_DIRECTORY_NOT_SET      = 1;

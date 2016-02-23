@@ -13,6 +13,7 @@ use CMPayments\SchemaValidator\SchemaValidator;
  * Class Json
  *
  * @package CMPayments\SchemaValidator
+ * @Author  Boy Wijnmaalen <boy.wijnmaalen@cmtelecom.com>
  */
 class Json
 {
