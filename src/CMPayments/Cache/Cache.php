@@ -13,10 +13,28 @@ class Cache
     /**
      * @var array
      */
+    private $passthru = [];
+
+    /**
+     * @var array
+     */
     private $options = [
         'directory' => __DIR__ . '/../../../storage/cache/',
-        'debug'           => false
+        'debug'     => false
     ];
+
+    /**
+     * Cache constructor.
+     *
+     * @param array $options
+     * @param array $passthru
+     */
+    public function __construct(array $options = [], &$passthru = [])
+    {
+        $this->setOptions($options);
+
+        $this->passthru = $passthru;
+    }
 
     /**
      * @return array
@@ -92,16 +110,10 @@ class Cache
      */
     public function getAbsoluteFilePath()
     {
-        // check is the cache directory option is set
-        if (!isset($this->options['directory'])) {
-
-            throw new CacheException(CacheException::ERROR_CACHE_DIRECTORY_NOT_SET, '$options[\'cache.directory\']');
-        }
-
         // check is the cache filename option is set
         if (!isset($this->options['filename'])) {
 
-            throw new CacheException(CacheException::ERROR_CACHE_FILENAME_NOT_SET, '$options[\'cache.filename\']');
+            throw new CacheException(CacheException::ERROR_CACHE_FILENAME_NOT_SET, '$options[\'filename\']');
         }
 
         return $this->options['directory'] . $this->options['filename'];
@@ -122,10 +134,7 @@ class Cache
         // check if the directory is writable or not and throw exception when $this->config['debug'] is true
         if (!is_writable($options['directory'])) {
 
-            if (isset($options['debug']) && $options['debug']) {
-
-                throw new CacheException(CacheException::ERROR_CACHE_DIRECTORY_NOT_WRITABLE, $options['directory']);
-            }
+            $this->passthru['warnings'][] = convert_exception_to_array(new CacheException(CacheException::ERROR_CACHE_DIRECTORY_NOT_WRITABLE, $options['directory']));
         } else {
 
             file_put_contents(((is_null($filename)) ? $this->getAbsoluteFilePath() : $filename), $this->generateRunnableCache($data));

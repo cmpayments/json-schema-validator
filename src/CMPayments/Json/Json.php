@@ -7,6 +7,7 @@ use CMPayments\JsonLint\Exceptions\ParseException;
 use CMPayments\JsonLint\JsonLinter;
 use CMPayments\SchemaValidator\BaseValidator;
 use CMPayments\Json\Exceptions\JsonException;
+use CMPayments\SchemaValidator\Exceptions\ValidateSchemaException;
 use CMPayments\SchemaValidator\SchemaValidator;
 
 /**
@@ -62,9 +63,13 @@ class Json
      */
     public function validate($schema = null, &$passthru = [], $options = [])
     {
+        $passthru = [
+            'errors'   => [],
+            'warnings' => []
+        ];
+
         try {
-            $cache = new Cache();
-            $cache->setOptions($options);
+            $cache = new Cache($options, $passthru);
 
             if (!is_null($schema)) {
 
@@ -88,7 +93,7 @@ class Json
 
                     foreach ($validator->getErrors() as $error) {
 
-                        $passthru[] = $error;
+                        $passthru['errors'][] = $error;
                     }
 
                     return $this->isValid = false;
@@ -97,22 +102,14 @@ class Json
                 // if $this->schema->type is other than object, decode it again but this time with $assoc = true
                 $this->input = ($this->schema->type === BaseValidator::OBJECT) ? $this->validatedInput : $this->decodeJSON($this->input, self::INPUT, true);
             }
+        } catch (ValidateSchemaException $e) {
+
+            // re throw this one
+            throw $e;
         } catch (\Exception $e) {
 
             // convert Exception to array
-            $destination        = new \stdClass();
-            $destination->class = get_class($e);
-            foreach ((new \ReflectionObject($e))->getProperties() as $sourceProperty) {
-
-                if (!in_array($sourceProperty->name, ['messages', 'severity', 'xdebug_message'])) {
-
-                    $sourceProperty->setAccessible(true);
-                    $destination->{$sourceProperty->getName()} = $sourceProperty->getValue($e);
-                }
-            }
-
-            // store exception
-            $passthru[] = (array)$destination;
+            $passthru['errors'][] = convert_exception_to_array($e);
 
             return $this->isValid = false;
         }

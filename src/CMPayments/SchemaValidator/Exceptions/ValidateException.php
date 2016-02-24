@@ -1,5 +1,7 @@
 <?php namespace CMPayments\SchemaValidator\Exceptions;
 
+use CMPayments\Exceptions\BaseException;
+
 /**
  * Class ValidateException
  *
