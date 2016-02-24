@@ -77,15 +77,21 @@ class JsonTest extends BaseTest
      * @param $exceptionClass
      * @param $exceptionCode
      */
-    protected function validateARequest($data, $schema, $method, $exceptionClass, $exceptionCode)
+    protected function validateARequest($data, $schema, $method, $exceptionClass, $exceptionCode, $cacheOptions = [])
     {
-        if ((new Json($data))->validate($schema, $errors)) {
+        if ((new Json($data))->validate($schema, $errors, $cacheOptions)) {
 
             $this->assertFalse($exceptionCode, $method . '; must result in an error but it didn\'t');
         } else {
 
-            $this->assertEquals($errors[0]['class'], $exceptionClass);
-            $this->assertEquals($errors[0]['code'], $exceptionCode);
+            // verify output structure
+            $this->assertEquals(isset($errors[Json::ERRORS]), isset($errors[JSON::WARNINGS]));
+            $this->assertEquals(count($errors[Json::ERRORS]), 1);
+            $this->assertEquals(count($errors[JSON::WARNINGS]), 0);
+
+            // verify output content
+            $this->assertEquals($errors[Json::ERRORS][0]['class'], $exceptionClass);
+            $this->assertEquals($errors[Json::ERRORS][0]['code'], $exceptionCode);
         }
     }
 }

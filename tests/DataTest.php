@@ -13,14 +13,20 @@ use CMPayments\SchemaValidator\SchemaValidator;
 class DataTest extends BaseTest
 {
     /**
-     * @var array
+     * @return array
      */
-    protected $valid = [
-        '{"type": "boolean"}'                           => true,
-        '{"type": "string"}'                            => 'test123',
-        '{"type": "string", "enum": ["test"]}'          => 'test',
-        '{"type": "array","items": {"type": "string"}}' => ['test123']
-    ];
+    public function provideValidInput()
+    {
+        $valid = [
+            '{"type": "boolean"}'                                                                                  => true,
+            '{"type": "string"}'                                                                                   => 'test123',
+            '{"type": "string", "enum": ["test"]}'                                                                 => 'test',
+            '{"type": "array","items": {"type": "string"}}'                                                        => ['test123'],
+            '{"type": "object", "properties": {"zipcode": {"type": "string", "pattern" : "[0-9]{4}[a-zA-Z]{2}"}}}' => json_decode('{"zipcode" : "48118EW"}')
+        ];
+
+        return $this->provideArrayForValidation($valid);
+    }
 
     /**
      * @dataProvider provideValidInput
@@ -31,14 +37,6 @@ class DataTest extends BaseTest
     public function testParsesValidStrings($schema, $data)
     {
         $this->assertTrue((new SchemaValidator($data, json_decode($schema)))->isValid(), $schema);
-    }
-
-    /**
-     * @return array
-     */
-    public function provideValidInput()
-    {
-        return $this->provideArrayForValidation($this->valid);
     }
 
     /**
@@ -374,6 +372,34 @@ class DataTest extends BaseTest
                     json_decode('{"type": "object", "properties": {"testProperty": {"type": "string", "maxLength": 3}}}')
                 ]
             ],
+            ValidateException::ERROR_USER_REGEX_ERROR_LAST_ERROR_OCCURRED          => [
+                [
+                    json_decode('{"username": "rob"}'),
+                    json_decode('{"type": "object", "properties": {"username": {"type": "string", "pattern" : "--[92929{{))"}}}'),
+                ],
+                [
+                    json_decode('{"username": "rob"}'),
+                    json_decode('{"type": "object", "properties": {"username": {"type": "string", "pattern" : "[9JDJ(JKlk3ko93030???jerjhu2/22/JJSJ"}}}'),
+                ]
+            ],
+            ValidateException::ERROR_USER_REGEX_NO_MATCH                           => [
+                [
+                    json_decode('{"username": "rob"}'),
+                    json_decode('{"type": "object", "properties": {"username": {"type": "string", "pattern" : "[aaaa]"}}}')
+                ],
+                [
+                    json_decode('{"username": "rob", "zipcode" : "4811EW"}'),
+                    json_decode('{"type": "object", "properties": {"username": {"type": "string"}, "zipcode" : {"type" : "string", "pattern" : "[a-zA-Z]{4}[0-9]{2}"}  }}')
+                ],
+                [
+                    json_decode('{"username": "rob", "zipcode" : "doesnotstartwithanumber"}'),
+                    json_decode('{"type": "object", "properties": {"username": {"type": "string"}, "zipcode" : {"type" : "string", "pattern" : "^[0-9][0-9a-zA-Z]{0,10}"}  }}')
+                ],
+            ]
+
+            // @TODO; write tests for ValidateException::ERROR_USER_REGEX_PREG_LAST_ERROR_OCCURRED
+            // @TODO; write tests for ValidateException::ERROR_USER_REGEX_UNKNOWN_ERROR_OCCURRED
+            // @TODO; write tests for ValidateException::ERROR_USER_REGEX_GENERAL_ERROR_OCCURRED
         ];
 
         $this->executeExceptionValidation($exceptions, false);
