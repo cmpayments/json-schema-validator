@@ -2,11 +2,15 @@
 
 ### Todo
 - write some tests in DataTest (look for @TODO)
+- write some tests in SchemaTest (look for @TODO)
 - update readme.md with changes from v0.0.5
-
 
 ### Important
 -
+
+### changelog [v0.0.6] – ??/02/2016
+- updated tests
+
 
 ### changelog [v0.0.5] – 24/02/2016
 - decoupled schema validation from ValidateException and moved to a newly created ValidateSchemaException
