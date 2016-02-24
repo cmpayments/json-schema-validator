@@ -31,9 +31,9 @@ class Cache
      */
     public function __construct(array $options = [], &$passthru = [])
     {
-        $this->setOptions($options);
+        $this->options = array_merge($this->options, $options);
 
-        $this->passthru = $passthru;
+        $this->passthru =& $passthru;
     }
 
     /**
@@ -45,14 +45,6 @@ class Cache
     }
 
     /**
-     * @param array $options
-     */
-    public function setOptions(array $options)
-    {
-        $this->options = array_merge($this->options, $options);
-    }
-
-    /**
      * Get the cache directory
      *
      * @return string
@@ -60,16 +52,6 @@ class Cache
     public function getDirectory()
     {
         return $this->options['directory'];
-    }
-
-    /**
-     * Set the cache directory
-     *
-     * @param $filename
-     */
-    public function setDirectory($filename)
-    {
-        $this->options['directory'] = $filename;
     }
 
     /**

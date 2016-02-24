@@ -18,8 +18,10 @@ use CMPayments\SchemaValidator\SchemaValidator;
  */
 class Json
 {
-    const SCHEMA = 'Schema';
-    const INPUT  = 'Input';
+    const SCHEMA   = 'Schema';
+    const INPUT    = 'Input';
+    const ERRORS   = 'errors';
+    const WARNINGS = 'warnings';
 
     /**
      * @var null|object|string
@@ -64,8 +66,8 @@ class Json
     public function validate($schema = null, &$passthru = [], $options = [])
     {
         $passthru = [
-            'errors'   => [],
-            'warnings' => []
+            self::ERRORS   => [],
+            self::WARNINGS => []
         ];
 
         try {

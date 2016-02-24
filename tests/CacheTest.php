@@ -17,29 +17,21 @@ class CacheTest extends BaseTest
      */
     public function testCacheDirectoryMustBeWritableWhenDebugIsOn()
     {
-        $this->setExpectedException(CacheException::class, '', CacheException::ERROR_CACHE_DIRECTORY_NOT_WRITABLE);
+        $optionsList = [
+            self::CONFIG_DEBUG_TRUE_CACHE_DIR_MISSING,
+            self::CONFIG_DEBUG_FALSE_CACHE_DIR_MISSING
+        ];
 
-        $cache = new Cache();
-        $cache->setOptions(self::CONFIG_DEBUG_TRUE_CACHE_DIR_MISSING);
+        foreach($optionsList as $options) {
 
-        new SchemaValidator(json_decode(self::VALID_EMPTY_JSON), json_decode(self::VALID_SCHEMA_NUMBER_OPTIONAL_JSON), $cache);
-    }
-
-    /**
-     * checking writability of non-existing cache directory when debug is OFF must NOT trigger an exception
-     */
-    public function testCacheDirectoryMustBeWritableWhenDebugIsOff()
-    {
-        try {
-
-            $cache = new Cache();
-            $cache->setOptions(self::CONFIG_DEBUG_FALSE_CACHE_DIR_MISSING);
+            $warnings = [];
+            $cache    = new Cache($options, $warnings);
 
             new SchemaValidator(json_decode(self::VALID_EMPTY_JSON), json_decode(self::VALID_SCHEMA_NUMBER_OPTIONAL_JSON), $cache);
-        } catch (\Exception $e) {
 
-            // when an asserting goes wrong the method execution is stopped
-            $this->assertTrue(false, 'A ValidateException was thrown were no ValidateException was expected.');
+            $this->assertTrue(isset($warnings['warnings'][0]));
+            $this->assertEquals(isset($warnings['warnings'][0]), 1);
+            $this->assertEquals($warnings['warnings'][0]['code'], CacheException::ERROR_CACHE_DIRECTORY_NOT_WRITABLE);
         }
     }
 }

@@ -69,7 +69,7 @@ class BaseException extends \ErrorException
         // override because when the given code exists
         if (isset($messages[$code])) {
 
-            $default = vsprintf($messages[$code], $this->getArgs());
+            $default = 'Schema validator: ' . vsprintf($messages[$code], $this->getArgs());
         }
 
         return $default;
