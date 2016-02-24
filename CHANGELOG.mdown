@@ -9,7 +9,7 @@
 -
 
 ### changelog [v0.0.6] – ??/02/2016
-- updated tests
+- updated tests, removed test where a invalid schema would result in an error, as of today an invalid schema results in an exception
 
 
 ### changelog [v0.0.5] – 24/02/2016
