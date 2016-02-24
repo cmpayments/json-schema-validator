@@ -1,6 +1,6 @@
 <?php namespace CMPayments\Json\Exceptions;
 
-use CMPayments\SchemaValidator\Exceptions\BaseException;
+use CMPayments\Exceptions\BaseException;
 
 /**
  * Class JsonException
