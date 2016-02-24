@@ -61,7 +61,7 @@ class Json
      * @param array       $options
      *
      * @return bool
-     * @throws JsonException|ParseException|JsonLintException
+     * @throws JsonException|ParseException|JsonLintException|ValidateSchemaException|bool
      */
     public function validate($schema = null, &$passthru = [], $options = [])
     {
@@ -95,7 +95,7 @@ class Json
 
                     foreach ($validator->getErrors() as $error) {
 
-                        $passthru['errors'][] = $error;
+                        $passthru[self::ERRORS][] = $error;
                     }
 
                     return $this->isValid = false;
@@ -111,7 +111,7 @@ class Json
         } catch (\Exception $e) {
 
             // convert Exception to array
-            $passthru['errors'][] = convert_exception_to_array($e);
+            $passthru[self::ERRORS][] = convert_exception_to_array($e);
 
             return $this->isValid = false;
         }
@@ -161,7 +161,7 @@ class Json
      * @return mixed
      * @throws JsonException
      * @throws ParseException|null
-     * @throws CacheException
+     * @throws ValidateSchemaException
      */
     private function validateAndConvertData($data, $type, Cache $cache)
     {
@@ -188,6 +188,16 @@ class Json
 
         // check if $data variable is valid JSON
         if (($result = (new JsonLinter())->lint($data)) instanceof JsonLintException) {
+
+            // if the current $data
+            if ($type === self::SCHEMA) {
+
+                $result = new ValidateSchemaException(
+                    ValidateSchemaException::ERROR_SCHEMA_IS_NOT_VALID_JSON,
+                    [$data],
+                    $result->getMessage()
+                );
+            }
 
             throw $result;
         }

@@ -1,6 +1,7 @@
 <?php namespace CMPayments\Cache;
 
 use CMPayments\Cache\Exceptions\CacheException;
+use CMPayments\Json\Json;
 
 /**
  * Class Cache
@@ -116,7 +117,7 @@ class Cache
         // check if the directory is writable or not and throw exception when $this->config['debug'] is true
         if (!is_writable($options['directory'])) {
 
-            $this->passthru['warnings'][] = convert_exception_to_array(new CacheException(CacheException::ERROR_CACHE_DIRECTORY_NOT_WRITABLE, $options['directory']));
+            $this->passthru[Json::WARNINGS][] = convert_exception_to_array(new CacheException(CacheException::ERROR_CACHE_DIRECTORY_NOT_WRITABLE, $options['directory']));
         } else {
 
             file_put_contents(((is_null($filename)) ? $this->getAbsoluteFilePath() : $filename), $this->generateRunnableCache($data));
