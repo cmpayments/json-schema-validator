@@ -10,25 +10,27 @@ use CMPayments\Exceptions\BaseException;
  */
 class ValidateSchemaException extends BaseException
 {
-    const ERROR_INPUT_IS_NOT_A_OBJECT                     = 1;
-    const ERROR_SCHEMA_CANNOT_BE_EMPTY_IN_PATH            = 2;
-    const ERROR_EMPTY_KEY_NOT_ALLOWED_IN_OBJECT           = 3;
-    const ERROR_SCHEMA_PROPERTY_NOT_DEFINED               = 4;
-    const ERROR_SCHEMA_PROPERTY_VALUE_IS_NOT_VALID        = 5;
-    const ERROR_SCHEMA_PROPERTY_TYPE_NOT_VALID            = 6;
-    const ERROR_SCHEMA_MAX_PROPERTY_CANNOT_NOT_BE_ZERO    = 7;
-    const ERROR_SCHEMA_PROPERTY_MIN_NOT_BIGGER_THAN_MAX   = 8;
-    const ERROR_SCHEMA_PROPERTY_REQUIRED_MUST_BE_AN_ARRAY = 9;
-    const ERROR_SCHEMA_REQUIRED_AND_PROPERTIES_MUST_MATCH = 10;
-    const ERROR_INVALID_REFERENCE                         = 11;
-    const ERROR_NO_LOCAL_DEFINITIONS_HAVE_BEEN_DEFINED    = 12;
-    const ERROR_CHECK_IF_LOCAL_DEFINITIONS_EXISTS         = 13;
-    const ERROR_CURL_NOT_INSTALLED                        = 14;
-    const ERROR_REMOTE_REFERENCE_DOES_NOT_EXIST           = 15;
-    const ERROR_NO_JSON_SCHEMA_WAS_FOUND                  = 16;
-    const ERROR_INPUT_IS_NOT_A_VALID_PREPOSITION          = 17;
+    const ERROR_SCHEMA_IS_NOT_VALID_JSON                  = 1;
+    const ERROR_INPUT_IS_NOT_A_OBJECT                     = 2;
+    const ERROR_SCHEMA_CANNOT_BE_EMPTY_IN_PATH            = 3;
+    const ERROR_EMPTY_KEY_NOT_ALLOWED_IN_OBJECT           = 4;
+    const ERROR_SCHEMA_PROPERTY_NOT_DEFINED               = 5;
+    const ERROR_SCHEMA_PROPERTY_VALUE_IS_NOT_VALID        = 6;
+    const ERROR_SCHEMA_PROPERTY_TYPE_NOT_VALID            = 7;
+    const ERROR_SCHEMA_MAX_PROPERTY_CANNOT_NOT_BE_ZERO    = 8;
+    const ERROR_SCHEMA_PROPERTY_MIN_NOT_BIGGER_THAN_MAX   = 9;
+    const ERROR_SCHEMA_PROPERTY_REQUIRED_MUST_BE_AN_ARRAY = 10;
+    const ERROR_SCHEMA_REQUIRED_AND_PROPERTIES_MUST_MATCH = 11;
+    const ERROR_INVALID_REFERENCE                         = 12;
+    const ERROR_NO_LOCAL_DEFINITIONS_HAVE_BEEN_DEFINED    = 13;
+    const ERROR_CHECK_IF_LOCAL_DEFINITIONS_EXISTS         = 14;
+    const ERROR_CURL_NOT_INSTALLED                        = 15;
+    const ERROR_REMOTE_REFERENCE_DOES_NOT_EXIST           = 16;
+    const ERROR_NO_JSON_SCHEMA_WAS_FOUND                  = 17;
+    const ERROR_INPUT_IS_NOT_A_VALID_PREPOSITION          = 18;
 
     protected $messages = [
+        self::ERROR_SCHEMA_IS_NOT_VALID_JSON                  => 'Schema is not valid JSON',
         self::ERROR_INPUT_IS_NOT_A_OBJECT                     => '\'%s\' is not an object but %s \'%s\'%s',
         self::ERROR_SCHEMA_CANNOT_BE_EMPTY_IN_PATH            => 'The Schema input cannot be empty in %s',
         self::ERROR_EMPTY_KEY_NOT_ALLOWED_IN_OBJECT           => 'It\'s not allowed for object \'%s\' to have an empty key',
@@ -47,4 +49,18 @@ class ValidateSchemaException extends BaseException
         self::ERROR_NO_JSON_SCHEMA_WAS_FOUND                  => 'No JSON Schema was not found at \'%s\'',
         self::ERROR_INPUT_IS_NOT_A_VALID_PREPOSITION          => '\'%s\' is not a valid preposition',
     ];
+
+    /**
+     * prepend classname to clarify error origin
+     *
+     * @param int    $code
+     * @param null   $default
+     * @param string $msgArray
+     *
+     * @return string
+     */
+    public function getItemFromVariableArray($code, $default = null, $msgArray = 'messages')
+    {
+        return (new \ReflectionClass($this))->getShortName() . ': ' . parent::getItemFromVariableArray($code, $default, $msgArray);
+    }
 }

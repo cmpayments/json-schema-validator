@@ -13,7 +13,7 @@
 - when the schema is not a valid schema it will result in an exception, this used to be an entry in the response in JSON->validate()
 - changed output of JSON->validate(), response is now an array with two keys, 'errors', 'warnings'
 -- 'errors' contains all things wrong with the user input
--- 'warnings' contains all things related to misconfiguration but are not exception worthy
+-- 'warnings' contains all things related to misconfiguration but are not exception worthy (currently one warning can be triggered, that being the cache directory is not writable)
 
 
 ### changelog [v0.0.4] – 23/02/2016

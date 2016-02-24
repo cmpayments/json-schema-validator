@@ -46,7 +46,7 @@ class BaseException extends \ErrorException
         $this->setArgs($args);
 
         // parent constructor
-        parent::__construct($this->getItemFromVariableArray($code, $this->defaultMessage), $code);
+        parent::__construct($this->getItemFromVariableArray($code, $message), $code);
     }
 
     /**
@@ -66,10 +66,15 @@ class BaseException extends \ErrorException
             $messages = $this->$msgArray;
         }
 
-        // override because when the given code exists
-        if (isset($messages[$code])) {
+        if (empty($default)) {
 
-            $default = 'Schema validator: ' . vsprintf($messages[$code], $this->getArgs());
+            if (!isset($messages[$code])) {
+
+                $default = $this->defaultMessage;
+            } else {
+
+                $default = vsprintf($messages[$code], $this->getArgs());
+            }
         }
 
         return $default;
