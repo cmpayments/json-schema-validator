@@ -52,9 +52,6 @@ class JsonTest extends BaseTest
     public function testDataIsStringButIsValidEmptyJSON()
     {
         $this->validateARequest(BaseTest::INVALID_JSON, BaseTest::VALID_SCHEMA_NUMBER_OPTIONAL_JSON, __METHOD__, ParseException::class, ParseException::ERROR_EXPECTED_INPUT_TO_BE_SOMETHING_ELSE);
-        $this->validateARequest(BaseTest::VALID_DATA_NUMBER_JSON, BaseTest::INVALID_EMPTY_JSON, __METHOD__, ParseException::class, ParseException::ERROR_EXPECTED_INPUT_TO_BE_SOMETHING_ELSE);
-        $this->validateARequest(BaseTest::INVALID_JSON, BaseTest::VALID_SCHEMA_NUMBER_OPTIONAL_JSON, __METHOD__, ParseException::class, ParseException::ERROR_EXPECTED_INPUT_TO_BE_SOMETHING_ELSE);
-        $this->validateARequest(BaseTest::VALID_DATA_NUMBER_JSON, BaseTest::INVALID_JSON, __METHOD__, ParseException::class, ParseException::ERROR_EXPECTED_INPUT_TO_BE_SOMETHING_ELSE);
     }
 
     /**
@@ -79,19 +76,26 @@ class JsonTest extends BaseTest
      */
     protected function validateARequest($data, $schema, $method, $exceptionClass, $exceptionCode, $cacheOptions = [])
     {
-        if ((new Json($data))->validate($schema, $errors, $cacheOptions)) {
+        try {
 
-            $this->assertFalse($exceptionCode, $method . '; must result in an error but it didn\'t');
-        } else {
+            if ((new Json($data))->validate($schema, $errors, $cacheOptions)) {
 
-            // verify output structure
-            $this->assertEquals(isset($errors[Json::ERRORS]), isset($errors[JSON::WARNINGS]));
-            $this->assertEquals(count($errors[Json::ERRORS]), 1);
-            $this->assertEquals(count($errors[JSON::WARNINGS]), 0);
+                $this->assertFalse($exceptionCode, $method . '; must result in an error but it didn\'t');
+            } else {
 
-            // verify output content
-            $this->assertEquals($errors[Json::ERRORS][0]['class'], $exceptionClass);
-            $this->assertEquals($errors[Json::ERRORS][0]['code'], $exceptionCode);
+                // verify output structure
+                $this->assertEquals(isset($errors[Json::ERRORS]), isset($errors[JSON::WARNINGS]));
+                $this->assertEquals(count($errors[Json::ERRORS]), 1);
+                $this->assertEquals(count($errors[JSON::WARNINGS]), 0);
+
+                // verify output content
+                $this->assertEquals($errors[Json::ERRORS][0]['class'], $exceptionClass);
+                $this->assertEquals($errors[Json::ERRORS][0]['code'], $exceptionCode);
+            }
+        } catch (\Exception $e) {
+
+            $this->assertFalse(true, 'Exception was thrown where none was expected: ' . $e->getMessage());
         }
+
     }
 }
