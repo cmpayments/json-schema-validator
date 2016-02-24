@@ -30,7 +30,10 @@
         "phpunit/phpunit": "If PHP Unit is not globally installed on your system the tests will not run, install the PHP Unit package locally to run the tests"
     },
     "autoload": {
-        "psr-4": { "CMPayments\\": "src/CMPayments/" }
+        "psr-4": { "CMPayments\\": "src/CMPayments/" },
+        "files": [
+            "src/CMPayments/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": { "CM\\Tests\\SchemaValidator\\Tests\\": "tests/" }

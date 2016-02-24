@@ -1,4 +1,4 @@
-<?php namespace CMPayments\SchemaValidator\Exceptions;
+<?php namespace CMPayments\Exceptions;
 
 /**
  * Class BaseException
@@ -8,7 +8,6 @@
  */
 class BaseException extends \ErrorException
 {
-
     private $args = [];
 
     private $defaultMessage = 'This service is temporarily unavailable';
