@@ -10,6 +10,7 @@
 
 ### changelog [v0.0.8] – ??/02/2016
 - changed the message upon failing a regex test. not outputting the regex anymore, new message reads; The value '%s' of property '%s' is not valid
+- in helpers.php, changed comment for method convert_exception_to_array(\Exception $e)
 
 ### changelog [v0.0.7] – 25/02/2016
 - fixed typo in all versions of the use BaseException statement

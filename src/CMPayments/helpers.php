@@ -2,7 +2,7 @@
 
 if (!function_exists('convert_exception_to_array')) {
     /**
-     * Converts an integer into a human readable value
+     * Converts an \Exception into an array
      *
      * @param Exception $e
      *
