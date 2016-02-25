@@ -1,6 +1,6 @@
 <?php namespace CMPayments\Cache\Exceptions;
 
-use CMPayments\Exceptions\BaseException;
+use CMPayments\Exception\BaseException;
 
 /**
  * Class CacheException

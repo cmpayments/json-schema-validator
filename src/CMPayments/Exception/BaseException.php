@@ -1,4 +1,4 @@
-<?php namespace CMPayments\Exceptions;
+<?php namespace CMPayments\Exception;
 
 /**
  * Class BaseException
