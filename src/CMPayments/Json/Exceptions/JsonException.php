@@ -1,6 +1,6 @@
 <?php namespace CMPayments\Json\Exceptions;
 
-use CMPayments\Exceptions\BaseException;
+use CMPayments\Exception\BaseException;
 
 /**
  * Class JsonException

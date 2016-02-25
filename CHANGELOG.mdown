@@ -8,7 +8,10 @@
 ### Important
 -
 
-### changelog [v0.0.6] – ??/02/2016
+### changelog [v0.0.7] – 25/02/2016
+- fixed typo in all versions of the use BaseException statement
+
+### changelog [v0.0.6] – 24/02/2016
 - updated tests, removed test where a invalid schema would result in an error, as of today an invalid schema results in an exception
 
 
