@@ -60,7 +60,7 @@ class ValidateException extends BaseException
         self::ERROR_USER_NUMBER_MAXIMUM_CHECK                     => 'The maximum value for property \'%s\' is \'%d\' (current value \'%d\')',
         self::ERROR_USER_STRING_MINIMUM_CHECK                     => 'The minimum string length for property \'%s\' is \'%d\' characters (current string length with value \'%s\' is \'%d\' characters)',
         self::ERROR_USER_STRING_MAXIMUM_CHECK                     => 'The maximum string length for property \'%s\' is \'%d\' characters (current string length with value \'%s\' is \'%d\' characters)',
-        self::ERROR_USER_REGEX_NO_MATCH                           => 'The property \'%s\' does not match the regular expression \'%s\'',
+        self::ERROR_USER_REGEX_NO_MATCH                           => 'The value \'%s\' of property \'%s\' is not valid',
         self::ERROR_USER_REGEX_DATA_NOT_SCALAR                    => 'The property \'%s\' should be a scalar to be able to validate it with a regular expression',
         self::ERROR_USER_REGEX_PREG_LAST_ERROR_OCCURRED           => 'Validating regular expression \'%s\' for property \'%s\' resulted in the following error: \'%s\'',
         self::ERROR_USER_REGEX_ERROR_LAST_ERROR_OCCURRED          => 'Validating regular expression \'%s\' for property \'%s\' resulted in the following error: \'%s\'',

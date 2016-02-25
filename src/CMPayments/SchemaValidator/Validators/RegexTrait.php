@@ -44,7 +44,7 @@ trait RegexTrait
             // successful preg_match but no match
             if ($result === 0) {
 
-                $this->addError(ValidateException::ERROR_USER_REGEX_NO_MATCH, [$data, $schema->pattern]);
+                $this->addError(ValidateException::ERROR_USER_REGEX_NO_MATCH, [$data, $path]);
             } elseif ($result === false) {
 
                 // preg_match resulted in an error, there are multiple causes why preg_match would result in an error
