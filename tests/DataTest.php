@@ -111,6 +111,18 @@ class DataTest extends BaseTest
                 [
                     json_decode('{"testProperty": ["1", "2", "3", "4", "5", "6", "7"]}'),
                     json_decode('{"type": "object", "properties": {"testProperty": {"type": "array", "items": {"type": "string"}, "minItems": 8}}}')
+                ],
+                [
+                    json_decode('[]'),
+                    json_decode('{"type": "array", "minItems": 2, "items": {"type": "string"}}')
+                ],
+                [
+                    json_decode('[1]'),
+                    json_decode('{"type": "array", "minItems": 2, "items": {"type": "string"}}')
+                ],
+                [
+                    json_decode('{"testProperty": ["2"]}'),
+                    json_decode('{"type": "object", "properties": {"testProperty": {"type": "array","minItems": 2, "items": {"type": "number"}}}}')
                 ]
             ],
             ValidateException::ERROR_USER_ARRAY_MAXIMUM_CHECK                      => [
@@ -372,7 +384,7 @@ class DataTest extends BaseTest
                     json_decode('{"type": "object", "properties": {"testProperty": {"type": "string", "maxLength": 3}}}')
                 ]
             ],
-            ValidateException::ERROR_USER_REGEX_ERROR_LAST_ERROR_OCCURRED          => [
+            ValidateException::ERROR_USER_REGEX_GENERAL_ERROR_OCCURRED             => [
                 [
                     json_decode('{"username": "rob"}'),
                     json_decode('{"type": "object", "properties": {"username": {"type": "string", "pattern" : "--[92929{{))"}}}'),
@@ -397,9 +409,9 @@ class DataTest extends BaseTest
                 ],
             ]
 
+            // @TODO; write tests for ValidateException::ERROR_USER_REGEX_ERROR_LAST_ERROR_OCCURRED
             // @TODO; write tests for ValidateException::ERROR_USER_REGEX_PREG_LAST_ERROR_OCCURRED
             // @TODO; write tests for ValidateException::ERROR_USER_REGEX_UNKNOWN_ERROR_OCCURRED
-            // @TODO; write tests for ValidateException::ERROR_USER_REGEX_GENERAL_ERROR_OCCURRED
         ];
 
         $this->executeExceptionValidation($exceptions, false);

@@ -64,6 +64,7 @@ trait ArrayTrait
         foreach ($data as $property => $row) {
 
             $this->validate($schema->items, $this->numberToOrdinal($property + 1) . ' child', $row, $path);
+//            $this->validate($schema->items, $this->numberToOrdinal($property + 1) . ' child', $row, (is_array($row) ? 'dsfdfsf' : $path));
         }
     }
 }
