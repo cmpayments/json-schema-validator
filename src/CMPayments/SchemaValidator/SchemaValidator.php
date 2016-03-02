@@ -471,7 +471,6 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
         }
     }
 
-
     /**
      * Walk through all $schema->required items and check if there is a $schema->properties item defined for it
      *
@@ -494,7 +493,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
         }
 
         // check if the $schema->required property contains fields that have not been defined in $schema->properties
-        if (count($missing = array_diff_key(array_flip($schema->required), (array)$schema->properties)) > 0) {
+        if (!empty($schema->required) && count($missing = array_diff_key(array_flip($schema->required), (array)$schema->properties)) > 0) {
 
             $count = count($missing);
             $verb  = $this->conjugationToBe($count);
