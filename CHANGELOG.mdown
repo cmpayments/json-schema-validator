@@ -8,9 +8,11 @@
 ### Important
 -
 
-### changelog [v0.0.8] – ??/02/2016
+### changelog [v0.0.8] – 02/03/2016
 - changed the message upon failing a regex test. not outputting the regex anymore, new message reads; The value '%s' of property '%s' is not valid
 - in helpers.php, changed comment for method convert_exception_to_array(\Exception $e)
+- added method convert_exception_to_array() in duplicate, one for < PHP 7 and one for >= PHP7
+- fixed where if the required property for a schema was set but was left empty it would result in an error
 
 ### changelog [v0.0.7] – 25/02/2016
 - fixed typo in all versions of the use BaseException statement
