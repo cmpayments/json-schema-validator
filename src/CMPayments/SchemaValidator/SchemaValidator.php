@@ -170,7 +170,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
     public function validate($schema, $property, $data, $path)
     {
         // check if the expected $schema->type matches gettype($data)
-        $type = $this->validateType($schema, $data, ($path . '/' . $property));
+        $type = $this->validateType($schema, $data, ((substr($path, -1) !== '/') ? $path . '/' . $property : $path . $property));
 
         // append /$property to $path
         $path .= (substr($path, 0, 1) !== '/') ? '/' . $property : $property;
@@ -640,9 +640,12 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
     /**
      * Validates the JSON SCHEMA data type against $data
      *
+     * @param $schema
      * @param $data
+     * @param $path
      *
      * @return string
+     * @throws ValidateException
      */
     private function validateType($schema, $data, $path)
     {
