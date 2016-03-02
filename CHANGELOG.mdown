@@ -6,7 +6,9 @@
 - update readme.md with changes from v0.0.5
 
 ### Important
--
+
+### changelog [v0.0.9] – 02/03/2016
+- fixed an issue where when dealing with an array with no items no check was performed on the amount of items even though a "minItems" property was set
 
 ### changelog [v0.0.8] – 02/03/2016
 - changed the message upon failing a regex test. not outputting the regex anymore, new message reads; The value '%s' of property '%s' is not valid
