@@ -119,9 +119,16 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
             // check if the expected $schema->type matches gettype($data)
             $this->validateType($schema, $data, $path);
 
-            foreach ($data as $property => $value) {
+            // when variable path is null it means that the base element is an array validate it anyway (even when there are no items present in the array)
+            if (is_null($path)) {
 
-                $this->validate($schema->items, $property, $value, $path);
+                $this->validate($schema, null, $data, null);
+            } else {
+
+                foreach ($data as $property => $value) {
+
+                    $this->validate($schema->items, $property, $value, $path);
+                }
             }
             // BaseValidator::OBJECT
         } elseif (is_object($data)) {
@@ -166,8 +173,8 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
         $type = $this->validateType($schema, $data, ($path . '/' . $property));
 
         // append /$property to $path
-        $path .= '/' . $property;
-		
+        $path .= (substr($path, 0, 1) !== '/') ? '/' . $property : $property;
+
         // if $type is an object
         if ($type === BaseValidator::OBJECT) {
 
