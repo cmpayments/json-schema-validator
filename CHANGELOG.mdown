@@ -7,7 +7,7 @@
 
 ### Important
 
-### changelog [v0.0.9] – 02/03/2016
+### changelog [v0.0.9] – 03/03/2016
 - fixed an issue where when dealing with an array with no items no check was performed on the amount of items even though a "minItems" property was set
 
 ### changelog [v0.0.8] – 02/03/2016
