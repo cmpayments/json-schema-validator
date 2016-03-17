@@ -31,6 +31,7 @@ class ValidateException extends BaseException
     const ERROR_USER_FORMAT_INVALID_EMAIL                     = 132;
     const ERROR_USER_FORMAT_INVALID_TIME                      = 133;
     const ERROR_USER_FORMAT_INVALID_UTC_SECONDS               = 134;
+    const ERROR_USER_FORMAT_INVALID_URL                       = 135;
     const ERROR_USER_NUMBER_MINIMUM_CHECK                     = 140;
     const ERROR_USER_NUMBER_MAXIMUM_CHECK                     = 141;
     const ERROR_USER_STRING_MINIMUM_CHECK                     = 150;
@@ -56,6 +57,7 @@ class ValidateException extends BaseException
         self::ERROR_USER_FORMAT_INVALID_EMAIL                     => 'Invalid email address \'%s\' for property \'%s\', expected format is a RFC 822 format with the exceptions that comments and whitespace folding are not supported',
         self::ERROR_USER_FORMAT_INVALID_TIME                      => 'Invalid time \'%s\' for property \'%s\', expected format is \'hh:mm:ss\'',
         self::ERROR_USER_FORMAT_INVALID_UTC_SECONDS               => 'Invalid time \'%s\' for property \'%s\', expected format is number of seconds since Epoch',
+        self::ERROR_USER_FORMAT_INVALID_URL                       => 'Invalid URL \'%s\' for property \'%s\', expected format compliant with RFC2396 with the addition that the value must contain a valid scheme and a valid host',
         self::ERROR_USER_NUMBER_MINIMUM_CHECK                     => 'The minimum value for property \'%s\' is \'%d\' (current value \'%d\')',
         self::ERROR_USER_NUMBER_MAXIMUM_CHECK                     => 'The maximum value for property \'%s\' is \'%d\' (current value \'%d\')',
         self::ERROR_USER_STRING_MINIMUM_CHECK                     => 'The minimum string length for property \'%s\' is \'%d\' characters (current string length with value \'%s\' is \'%d\' characters)',
