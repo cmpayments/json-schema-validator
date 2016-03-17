@@ -46,6 +46,7 @@ class BaseValidator
     const EMAIL       = 'email';
     const TIME        = 'time';
     const UTC_SECONDS = 'utc-seconds';
+    const URL         = 'url';
 
     // Valid types for the items in $schema->properties
     private $validTypes = [
@@ -62,7 +63,8 @@ class BaseValidator
         self::DATETIME,
         self::EMAIL,
         self::TIME,
-        self::UTC_SECONDS
+        self::UTC_SECONDS,
+        self::URL
     ];
 
     /**
