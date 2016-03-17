@@ -61,11 +61,20 @@ trait FormatTrait
                 }
                 break;
 
-            // BaseValidator::epoch seconds
+            // BaseValidator::UTC_SECONDS (in epoch seconds)
             case BaseValidator::UTC_SECONDS:
                 if (!$this->validateDateTime((string)$data, 'U')) { // U = Seconds since the Unix Epoch
 
                     $this->addError(ValidateException::ERROR_USER_FORMAT_INVALID_UTC_SECONDS, [$data, $path]);
+                }
+                break;
+
+            // BaseValidator::URL
+            case BaseValidator::URL:
+
+                if (filter_var($data, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED | FILTER_FLAG_HOST_REQUIRED) === false) {
+
+                    $this->addError(ValidateException::ERROR_USER_FORMAT_INVALID_URL, [$data, $path]);
                 }
                 break;
         }
