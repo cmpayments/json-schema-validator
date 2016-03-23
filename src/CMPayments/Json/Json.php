@@ -148,7 +148,7 @@ class Json
             return null;
         }
 
-        return $this->input;
+        return (is_string($this->input)) ? $this->validatedInput : $this->input;
     }
 
     /**
