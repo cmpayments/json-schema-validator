@@ -23,9 +23,6 @@
         "php": "^5.4 || ^7.0",
         "cmpayments/jsonlint": "~v0.0.4"
     },
-    "require-dev": {
-        "phpunit/phpunit": "~5.0"
-    },
     "suggest": {
         "phpunit/phpunit": "If PHP Unit is not globally installed on your system the tests will not run, install the PHP Unit package locally to run the tests"
     },
