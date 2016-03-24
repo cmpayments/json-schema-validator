@@ -53,9 +53,14 @@ trait RegexTrait
                     PREG_BACKTRACK_LIMIT_ERROR => ValidateException::PREG_BACKTRACK_LIMIT_ERROR,
                     PREG_RECURSION_LIMIT_ERROR => ValidateException::PREG_RECURSION_LIMIT_ERROR,
                     PREG_BAD_UTF8_ERROR        => ValidateException::PREG_BAD_UTF8_ERROR,
-                    PREG_BAD_UTF8_OFFSET_ERROR => ValidateException::PREG_BAD_UTF8_OFFSET_ERROR,
-                    PREG_JIT_STACKLIMIT_ERROR  => ValidateException::PREG_JIT_STACK_LIMIT_ERROR,
+                    PREG_BAD_UTF8_OFFSET_ERROR => ValidateException::PREG_BAD_UTF8_OFFSET_ERROR
                 ];
+
+                // when dealing with a > PHP 7 environment another preg_last_error() error became available, if so add it to the list
+                if (PHP_VERSION_ID > 70000) {
+
+                    $pregErrors[PREG_JIT_STACKLIMIT_ERROR] = ValidateException::PREG_JIT_STACK_LIMIT_ERROR;
+                }
 
                 // check for preg_match error occurred
                 if (isset($pregErrors[preg_last_error()])) {

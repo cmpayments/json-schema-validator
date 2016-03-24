@@ -95,7 +95,7 @@ class SchemaTest extends BaseTest
                 json_decode('{"type": "object", "properties": {"id": {"$ref": "http://json-schema.org/non-existent"}}}')
             ],
             ValidateSchemaException::ERROR_NO_JSON_SCHEMA_WAS_FOUND                                         => [
-                json_decode('{"type": "object", "properties": {"id": {"$ref": "http://boy.dev.clubmessage.local/cmpayments/_keep/empty.php"}}}')
+                json_decode('{"type": "object", "properties": {"id": {"$ref": "https://raw.githubusercontent.com/cmpayments/json-schema-validator/master/tests/_empty.php"}}}')
             ],
             /** @TODO; Write test */
             ValidateSchemaException::ERROR_INPUT_IS_NOT_A_VALID_PREPOSITION                                 => [
