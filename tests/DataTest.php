@@ -384,7 +384,7 @@ class DataTest extends BaseTest
                     json_decode('{"type": "object", "properties": {"testProperty": {"type": "string", "maxLength": 3}}}')
                 ]
             ],
-            ValidateException::ERROR_USER_REGEX_GENERAL_ERROR_OCCURRED             => [
+            ValidateException::ERROR_USER_REGEX_ERROR_LAST_ERROR_OCCURRED          => [
                 [
                     json_decode('{"username": "rob"}'),
                     json_decode('{"type": "object", "properties": {"username": {"type": "string", "pattern" : "--[92929{{))"}}}'),
@@ -409,9 +409,9 @@ class DataTest extends BaseTest
                 ],
             ]
 
-            // @TODO; write tests for ValidateException::ERROR_USER_REGEX_ERROR_LAST_ERROR_OCCURRED
             // @TODO; write tests for ValidateException::ERROR_USER_REGEX_PREG_LAST_ERROR_OCCURRED
             // @TODO; write tests for ValidateException::ERROR_USER_REGEX_UNKNOWN_ERROR_OCCURRED
+            // @TODO; write tests for ValidateException::ERROR_USER_REGEX_GENERAL_ERROR_OCCURRED
         ];
 
         $this->executeExceptionValidation($exceptions, false);
