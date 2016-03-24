@@ -7,6 +7,9 @@
 
 ### Important
 
+### changelog [v0.0.11] – ??/03/2016
+- fixed tests
+
 ### changelog [v0.0.10] – 24/03/2016
 - added the format 'URL', expected format must compliant with RFC2396 with the addition that the value must contain a valid scheme and a valid host
 
