@@ -1,6 +1,6 @@
 language: php
 
-sudo: false
+sudo: true
 
 php:
   - 5.4
@@ -10,6 +10,7 @@ php:
   - hhvm
 
 before_script:
+  - sudo composer self-update
   - composer install
   - composer dumpautoload -o
 
