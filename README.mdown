@@ -1,8 +1,8 @@
-# Schema Validator for PHP [![Build Status](https://img.shields.io/travis/cmpayments/schemavalidator.svg)](https://travis-ci.org/cmpayments/schemavalidator)
+# Schema Validator for PHP [![Build Status](https://img.shields.io/travis/cmpayments/json-schema-validator.svg)](https://travis-ci.org/cmpayments/json-schema-validator)
 
-![License](https://img.shields.io/packagist/l/cmpayments/schemavalidator.svg)
-[![Latest Stable Version](https://img.shields.io/packagist/v/cmpayments/schemavalidator.svg)](https://packagist.org/packages/cmpayments/schemavalidator)
-[![Total Downloads](https://img.shields.io/packagist/dt/cmpayments/schemavalidator.svg)](https://packagist.org/packages/cmpayments/schemavalidator)
+![License](https://img.shields.io/packagist/l/cmpayments/json-schema-validator.svg)
+[![Latest Stable Version](https://img.shields.io/packagist/v/cmpayments/json-schema-validator.svg)](https://packagist.org/packages/cmpayments/json-schema-validator)
+[![Total Downloads](https://img.shields.io/packagist/dt/cmpayments/json-schema-validator.svg)](https://packagist.org/packages/cmpayments/json-schema-validator)
 [![Reference Status](https://www.versioneye.com/php/cmpayments:schemavalidator/reference_badge.svg)](https://www.versioneye.com/php/cmpayments:schemavalidator/references)
 
 SchemaValidator is a PHP implementation for validating JSON against a Schema (also a string), the JSON and Schema are both linted with https://github.com/cmpayments/jsonlint.
