@@ -10,7 +10,10 @@ php:
   - hhvm
 
 before_script:
+<<<<<<< HEAD
   - composer self-update
+=======
+>>>>>>> 366bba4236c38e6ba6cc835d4bfaf3555e7095bb
   - composer install
   - composer dumpautoload -o
 
