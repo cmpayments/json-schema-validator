@@ -79,26 +79,29 @@ class SchemaTest extends BaseTest
             ValidateSchemaException::ERROR_SCHEMA_REQUIRED_AND_PROPERTIES_MUST_MATCH => [
                 json_decode('{"type": "object", "properties": {"id": {"type": "number"}}, "required": ["id", "non-existent"]}')
             ],
-            ValidateSchemaException::ERROR_INVALID_REFERENCE                                                => [
+            ValidateSchemaException::ERROR_INVALID_REFERENCE                         => [
                 json_decode('{"type": "object", "properties": {"id": {"$ref": "non-existent-and-invalid"}}}')
             ],
-            ValidateSchemaException::ERROR_NO_LOCAL_DEFINITIONS_HAVE_BEEN_DEFINED                           => [
+            ValidateSchemaException::ERROR_NO_LOCAL_DEFINITIONS_HAVE_BEEN_DEFINED    => [
                 json_decode('{"type": "object", "properties": {"id": {"$ref": "#/definitions/non-existent-but-valid"}}}'),
                 json_decode('{"type": "object", "properties": {"id": {"$ref": "#/definitions/non-existent-but-valid"}}, "definitions": {}}')
             ],
-            ValidateSchemaException::ERROR_CHECK_IF_LOCAL_DEFINITIONS_EXISTS                                => [
+            ValidateSchemaException::ERROR_CHECK_IF_LOCAL_DEFINITIONS_EXISTS         => [
                 json_decode('{"type": "object", "properties": {"id": {"$ref": "#/definitions/non-existent-but-valid"}}, "definitions": {"id": {}}}')
             ],
             /** @TODO; trigger an Exception where the CURL extension is unavailable */
-            ValidateSchemaException::ERROR_CURL_NOT_INSTALLED                                               => [],
-            ValidateSchemaException::ERROR_REMOTE_REFERENCE_DOES_NOT_EXIST                                  => [
+            ValidateSchemaException::ERROR_CURL_NOT_INSTALLED                        => [],
+            ValidateSchemaException::ERROR_REMOTE_REFERENCE_DOES_NOT_EXIST           => [
                 json_decode('{"type": "object", "properties": {"id": {"$ref": "http://json-schema.org/non-existent"}}}')
             ],
-            ValidateSchemaException::ERROR_NO_JSON_SCHEMA_WAS_FOUND                                         => [
+            ValidateSchemaException::ERROR_NO_DATA_WAS_FOUND_IN_REMOTE_SCHEMA        => [
                 json_decode('{"type": "object", "properties": {"id": {"$ref": "https://raw.githubusercontent.com/cmpayments/json-schema-validator/master/tests/_empty.php"}}}')
             ],
+            ValidateSchemaException::ERROR_NO_VALID_JSON_WAS_FOUND_IN_REMOTE_SCHEMA  => [
+                json_decode('{"type": "object", "properties": {"id": {"$ref": "https://raw.githubusercontent.com/cmpayments/json-schema-validator/master/tests/_invalid_json.php"}}}')
+            ],
             /** @TODO; Write test */
-            ValidateSchemaException::ERROR_INPUT_IS_NOT_A_VALID_PREPOSITION                                 => [
+            ValidateSchemaException::ERROR_INPUT_IS_NOT_A_VALID_PREPOSITION          => [
 
             ]
         ];

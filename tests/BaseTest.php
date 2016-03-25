@@ -13,8 +13,8 @@ use CMPayments\SchemaValidator\Exceptions\ValidateSchemaException;
  */
 abstract class BaseTest extends \PHPUnit_Framework_TestCase
 {
-    const CONFIG_DEBUG_TRUE_CACHE_DIR_MISSING  = ['debug' => true, 'directory' => __DIR__ . '/non-existent/'];
-    const CONFIG_DEBUG_FALSE_CACHE_DIR_MISSING = ['debug' => false, 'directory' => __DIR__ . '/non-existent/'];
+    protected $configDebugTrueCacheDirMissing = ['debug' => true, 'directory' => __DIR__ . '/non-existent/'];
+    protected $configDebugFalseCacheDirMissing = ['debug' => false, 'directory' => __DIR__ . '/non-existent/'];
     const EMPTY_STRING                         = '';
     const INVALID_JSON                         = '{test}';
     const INVALID_EMPTY_JSON                   = '{test}';

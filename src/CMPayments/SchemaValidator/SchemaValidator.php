@@ -624,16 +624,22 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
             throw new ValidateSchemaException(ValidateSchemaException::ERROR_REMOTE_REFERENCE_DOES_NOT_EXIST, $schema->{'$ref'});
         }
 
+        // if the response is empty no valid schema (or actually no data at all) was found
         if (empty($response)) {
 
-            throw new ValidateSchemaException(ValidateSchemaException::ERROR_NO_JSON_SCHEMA_WAS_FOUND, $schema->{'$ref'});
+            throw new ValidateSchemaException(ValidateSchemaException::ERROR_NO_DATA_WAS_FOUND_IN_REMOTE_SCHEMA, $schema->{'$ref'});
         }
 
         $json = new Json($response);
 
         if ($json->validate()) {
 
+            // if the validate method returned true it means valid JSON was found, return the decoded JSON schema
             return $json->getDecodedJSON();
+        } else {
+
+            // if the validate method returned false it means the JSON Linter can not make chocolate from $response
+            throw new ValidateSchemaException(ValidateSchemaException::ERROR_NO_VALID_JSON_WAS_FOUND_IN_REMOTE_SCHEMA, $schema->{'$ref'});
         }
     }
 
@@ -675,7 +681,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
                 if (in_array($type, [BaseValidator::STRING])) {
 
                     $data = str_replace("\n", '', $data);
-                    $data = preg_replace( "/\r|\n/", '', $data);
+                    $data = preg_replace("/\r|\n/", '', $data);
                     $data = (strlen($data) < 25) ? $data : substr($data, 0, 25) . ' [...]';
                 }
 

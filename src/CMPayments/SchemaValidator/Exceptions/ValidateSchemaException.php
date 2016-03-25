@@ -26,8 +26,9 @@ class ValidateSchemaException extends BaseException
     const ERROR_CHECK_IF_LOCAL_DEFINITIONS_EXISTS         = 14;
     const ERROR_CURL_NOT_INSTALLED                        = 15;
     const ERROR_REMOTE_REFERENCE_DOES_NOT_EXIST           = 16;
-    const ERROR_NO_JSON_SCHEMA_WAS_FOUND                  = 17;
-    const ERROR_INPUT_IS_NOT_A_VALID_PREPOSITION          = 18;
+    const ERROR_NO_DATA_WAS_FOUND_IN_REMOTE_SCHEMA        = 17;
+    const ERROR_NO_VALID_JSON_WAS_FOUND_IN_REMOTE_SCHEMA  = 18;
+    const ERROR_INPUT_IS_NOT_A_VALID_PREPOSITION          = 19;
 
     protected $messages = [
         self::ERROR_SCHEMA_IS_NOT_VALID_JSON                  => 'Schema is not valid JSON',
@@ -46,7 +47,8 @@ class ValidateSchemaException extends BaseException
         self::ERROR_CHECK_IF_LOCAL_DEFINITIONS_EXISTS         => 'The reference \'%s\' could not be matched to; \'%s\'',
         self::ERROR_CURL_NOT_INSTALLED                        => 'cURL not installed',
         self::ERROR_REMOTE_REFERENCE_DOES_NOT_EXIST           => 'The remote reference \'%s\' does not exist',
-        self::ERROR_NO_JSON_SCHEMA_WAS_FOUND                  => 'No JSON Schema was not found at \'%s\'',
+        self::ERROR_NO_DATA_WAS_FOUND_IN_REMOTE_SCHEMA        => 'No data found at \'%s\'',
+        self::ERROR_NO_VALID_JSON_WAS_FOUND_IN_REMOTE_SCHEMA  => 'No valid JSON Schema found at \'%s\'',
         self::ERROR_INPUT_IS_NOT_A_VALID_PREPOSITION          => '\'%s\' is not a valid preposition',
     ];
 
