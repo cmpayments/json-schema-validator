@@ -2,6 +2,7 @@
 
 ![License](https://img.shields.io/packagist/l/cmpayments/schemavalidator.svg)
 [![Latest Stable Version](https://img.shields.io/packagist/v/cmpayments/schemavalidator.svg)](https://packagist.org/packages/cmpayments/schemavalidator)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/cmpayments/json-schema-validator/badges/quality-score.png)](https://scrutinizer-ci.com/g/cmpayments/json-schema-validator/)
 [![Total Downloads](https://img.shields.io/packagist/dt/cmpayments/schemavalidator.svg)](https://packagist.org/packages/cmpayments/schemavalidator)
 [![Reference Status](https://www.versioneye.com/php/cmpayments:schemavalidator/reference_badge.svg)](https://www.versioneye.com/php/cmpayments:schemavalidator/references)
 
