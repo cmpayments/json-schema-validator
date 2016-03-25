@@ -63,6 +63,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
             throw new ValidateSchemaException(ValidateSchemaException::ERROR_INPUT_IS_NOT_A_OBJECT, ['Schema', $this->getPreposition(gettype($schema)), gettype($schema), '']);
         }
 
+        // PHP 5.4
         $filename = $cache->getFilename();
         if (empty($filename)) {
 
@@ -223,8 +224,11 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
             $schema = $this->getReference($schema);
         }
 
+        // PHP 5.4
+        $schemaInArray = (array)$schema;
+
         // check if the given schema is not empty
-        if (empty((array)$schema)) {
+        if (empty($schemaInArray)) {
 
             throw new ValidateSchemaException(ValidateSchemaException::ERROR_SCHEMA_CANNOT_BE_EMPTY_IN_PATH, $path);
         }
