@@ -242,8 +242,11 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
         // validate $schema->properties
         if (isset($schema->properties)) {
 
+            // PHP 5.4
+            $schemaPropertiesInArray = (array)$schema->properties;
+
             // check if the given schema is not empty
-            if (empty((array)$schema->properties)) {
+            if (empty($schemaPropertiesInArray)) {
 
                 throw new ValidateSchemaException(ValidateSchemaException::ERROR_SCHEMA_CANNOT_BE_EMPTY_IN_PATH, ($path . '/properties'));
             }
