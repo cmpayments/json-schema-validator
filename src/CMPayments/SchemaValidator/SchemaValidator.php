@@ -63,6 +63,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
             throw new ValidateSchemaException(ValidateSchemaException::ERROR_INPUT_IS_NOT_A_OBJECT, ['Schema', $this->getPreposition(gettype($schema)), gettype($schema), '']);
         }
 
+        $filename = $cache->getFilename();
         if (empty($cache->getFilename())) {
 
             $cache->setFilename(md5(json_encode($schema)) . '.php');
