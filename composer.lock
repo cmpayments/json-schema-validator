@@ -13,12 +13,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cmpayments/jsonlint.git",
-                "reference": "ed993ebd58e280861d69ba9c4a59ac8fbcfa5ab9"
+                "reference": "63cd9bc520d43b5297dd54b53dc6c564fe31b26b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cmpayments/jsonlint/zipball/ed993ebd58e280861d69ba9c4a59ac8fbcfa5ab9",
-                "reference": "ed993ebd58e280861d69ba9c4a59ac8fbcfa5ab9",
+                "url": "https://api.github.com/repos/cmpayments/jsonlint/zipball/63cd9bc520d43b5297dd54b53dc6c564fe31b26b",
+                "reference": "63cd9bc520d43b5297dd54b53dc6c564fe31b26b",
                 "shasum": ""
             },
             "require": {
@@ -56,7 +56,7 @@
                 "syntaxcheck",
                 "validator"
             ],
-            "time": "2016-03-25 10:10:29"
+            "time": "2016-03-25 12:28:40"
         }
     ],
     "packages-dev": [],
