@@ -28,7 +28,7 @@ trait RegexTrait
 
         $pattern = '/' . trim($schema->pattern, '/') . '/';
 
-        if (($schema->type !== BaseValidator::NUMBER || $schema->type !== BaseValidator::STRING) && !is_scalar($data)) {
+        if (!in_array($schema->type, [BaseValidator::NUMBER, BaseValidator::STRING]) && !is_scalar($data)) {
 
             $this->addError(ValidateException::ERROR_USER_REGEX_DATA_NOT_SCALAR, [$data]);
         }
@@ -68,11 +68,19 @@ trait RegexTrait
                     $this->addError(ValidateException::ERROR_USER_REGEX_PREG_LAST_ERROR_OCCURRED, [$schema->pattern, $data, $pregErrors[preg_last_error()]]);
                 } elseif (($error = error_get_last()) !== null) {
 
-                    // preg_match could possibly throw an error, retrieve it
-                    if (strpos($error['message'], 'preg_match()') !== false) {
-
-                        $this->addError(ValidateException::ERROR_USER_REGEX_ERROR_LAST_ERROR_OCCURRED, [$schema->pattern, $data, substr($error['message'], strlen('preg_match(): '))]);
-                    }
+                    // if the string 'preg_match()' is part of the error message we need to strip it
+                    // because the error message is returned to the user and we don't want to reveal
+                    // anything to the user about how we are matching patterns on a string.
+                    // HHVM and PHP return different kind of error messages..
+                    // HHVM does not prepend the string 'preg_match()' to the error message where PHP does prepend 'preg_match()'..
+                    $this->addError(
+                        ValidateException::ERROR_USER_REGEX_ERROR_LAST_ERROR_OCCURRED,
+                        [
+                            $schema->pattern,
+                            $data,
+                            ((strpos($error['message'], 'preg_match()') !== false) ? substr($error['message'], strlen('preg_match(): ')) : $error['message'])
+                        ]
+                    );
                 } else {
 
                     // unknown error..

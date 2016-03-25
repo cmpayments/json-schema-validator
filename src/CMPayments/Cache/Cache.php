@@ -17,14 +17,6 @@ class Cache
     private $passthru = [];
 
     /**
-     * @var array
-     */
-    private $options = [
-        'directory' => __DIR__ . '/../../../storage/cache/',
-        'debug'     => false
-    ];
-
-    /**
      * Cache constructor.
      *
      * @param array $options
@@ -32,7 +24,12 @@ class Cache
      */
     public function __construct(array $options = [], &$passthru = [])
     {
-        $this->options = array_merge($this->options, $options);
+        $defaultOptions = [
+            'directory' => __DIR__ . '/../../../storage/cache/',
+            'debug'     => false
+        ];
+
+        $this->options = array_merge($defaultOptions, $options);
 
         $this->passthru =& $passthru;
     }
