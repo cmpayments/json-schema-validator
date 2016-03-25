@@ -16,7 +16,7 @@ trait FormatTrait
      *
      * @param $data
      * @param $schema
-     * @param $path
+     * @param string $path
      */
     public function validateFormat($data, $schema, $path)
     {
@@ -84,7 +84,7 @@ trait FormatTrait
      * Validate a $datetime string and match it againt a $format
      *
      * @param $datetime
-     * @param $format
+     * @param string $format
      *
      * @return bool
      */

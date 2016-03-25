@@ -1,7 +1,6 @@
 <?php namespace CMPayments\Json;
 
 use CMPayments\Cache\Cache;
-use CMPayments\Cache\Exceptions\CacheException;
 use CMPayments\JsonLint\Exceptions\JsonLintException;
 use CMPayments\JsonLint\Exceptions\ParseException;
 use CMPayments\JsonLint\JsonLinter;

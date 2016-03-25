@@ -32,7 +32,7 @@ if (!function_exists('convert_exception_to_array')) {
         /**
          * Converts an \Throwable into an array
          *
-         * @param Throwable $e
+         * @param Exception $e
          *
          * @return string
          */
