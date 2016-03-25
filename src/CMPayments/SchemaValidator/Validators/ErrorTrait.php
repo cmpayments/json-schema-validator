@@ -104,7 +104,7 @@ trait ErrorTrait
     /**
      * Returns a valid conjugation of the verb 'to be'
      *
-     * @param int $count
+     * @param integer $count
      *
      * @return string
      */
@@ -117,7 +117,7 @@ trait ErrorTrait
     /**
      * Returns a valid representation of 'items' (or other value)
      *
-     * @param int    $count
+     * @param        integer $count
      * @param string $single
      * @param string $plural
      *

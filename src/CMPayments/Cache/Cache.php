@@ -36,7 +36,7 @@ class Cache
 
         $this->options = array_merge($defaultOptions, $options);
 
-        $this->passthru =& $passthru;
+        $this->passthru = & $passthru;
     }
 
     /**
@@ -70,7 +70,7 @@ class Cache
     /**
      * Set the cache filename
      *
-     * @param $filename
+     * @param string $filename
      */
     public function setFilename($filename)
     {
@@ -149,7 +149,7 @@ class Cache
      * @param            $variable
      * @param bool|false $recursion
      *
-     * @return mixed|string
+     * @return string
      *
      * @author Bas Peters <bp@cm.nl>
      */

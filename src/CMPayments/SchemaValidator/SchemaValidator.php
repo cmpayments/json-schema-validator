@@ -96,7 +96,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
      * @param             $data
      * @param null|string $path
      *
-     * @return bool
+     * @return boolean|null
      */
     public function validateData($schema, $data, $path = null)
     {
@@ -165,7 +165,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
      * @param $schema
      * @param $data
      * @param $property
-     * @param $path
+     * @param null|string $path
      *
      * @return bool
      */
@@ -297,7 +297,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
      * Validate mandatory $schema->$property properties
      *
      * @param $schema
-     * @param $path
+     * @param string $path
      *
      * @return mixed
      * @throws ValidateException
@@ -323,7 +323,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
      * Validate optional $schema->$property properties
      *
      * @param $schema
-     * @param $path
+     * @param string $path
      *
      * @return mixed
      * @throws ValidateException
@@ -369,7 +369,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
     /**
      * Validate $schema->$property
      *
-     * @param            $input
+     * @param            string[] $input
      * @param            $schema
      * @param            $path
      * @param bool|false $mandatory
@@ -488,7 +488,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
      * Walk through all $schema->required items and check if there is a $schema->properties item defined for it
      *
      * @param $schema
-     * @param $path
+     * @param string $path
      *
      * @throws ValidateSchemaException
      */
@@ -654,7 +654,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
      *
      * @param $schema
      * @param $data
-     * @param $path
+     * @param null|string $path
      *
      * @return string
      * @throws ValidateException
