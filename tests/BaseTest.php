@@ -63,7 +63,7 @@ abstract class BaseTest extends \PHPUnit_Framework_TestCase
                 $this->assertTrue(false, vsprintf(
                     'Exception should be of type \'%s\' but got type \'%s\'',
                     [
-                        implode('\', \'', [ValidateException::class, ValidateSchemaException::class]),
+                        implode('\', \'', [ValidateException::getClassName(), ValidateSchemaException::getClassName()]),
                         get_class($e)
                     ]
                 ));

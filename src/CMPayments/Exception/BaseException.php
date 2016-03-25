@@ -79,4 +79,14 @@ class BaseException extends \ErrorException
 
         return $default;
     }
+
+    /**
+     * PHP 5.4 workaround to something like this
+     *
+     * @return string
+     */
+    static public function getClassName(){
+
+        return __CLASS__;
+    }
 }
