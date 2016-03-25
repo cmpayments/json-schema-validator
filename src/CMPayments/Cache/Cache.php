@@ -31,7 +31,7 @@ class Cache
 
         $this->options = array_merge($defaultOptions, $options);
 
-        $this->passthru =& $passthru;
+        $this->passthru = & $passthru;
     }
 
     /**
