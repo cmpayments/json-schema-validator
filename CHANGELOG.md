@@ -7,12 +7,13 @@
 
 ### Important
 
-### changelog [v0.0.11] – ??/03/2016
+### changelog [v0.0.11] – 25/03/2016
 - fixed tests
 - added _empty.php (for uit tests) to the project
 - removed require-dev from composer.json all together
 - added travis.yml to update composer itself before executing tests
 - fixed regex (in regexTrait.php) validation where HHVM and PHP output different kind of error messages
+- add workaround 'ExceptionClassNameA::getClassName()' to every Exception since ExceptionClassName::class is invalid in PHP5.4
 
 ### changelog [v0.0.10] – 24/03/2016
 - added the format 'URL', expected format must compliant with RFC2396 with the addition that the value must contain a valid scheme and a valid host

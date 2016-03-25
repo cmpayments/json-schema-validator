@@ -17,16 +17,16 @@ class JsonTest extends BaseTest
      */
     public function testDataMustBeString()
     {
-        $this->validateARequest(null, BaseTest::VALID_SCHEMA_NUMBER_OPTIONAL_JSON, __METHOD__, JsonException::class, JsonException::ERROR_INPUT_IS_NOT_OF_TYPE_STRING);
-        $this->validateARequest(true, BaseTest::VALID_SCHEMA_NUMBER_OPTIONAL_JSON, __METHOD__, JsonException::class, JsonException::ERROR_INPUT_IS_NOT_OF_TYPE_STRING);
-        $this->validateARequest(1, BaseTest::VALID_SCHEMA_NUMBER_OPTIONAL_JSON, __METHOD__, JsonException::class, JsonException::ERROR_INPUT_IS_NOT_OF_TYPE_STRING);
-        $this->validateARequest(1.4, BaseTest::VALID_SCHEMA_NUMBER_OPTIONAL_JSON, __METHOD__, JsonException::class, JsonException::ERROR_INPUT_IS_NOT_OF_TYPE_STRING);
-        $this->validateARequest([], BaseTest::VALID_SCHEMA_NUMBER_OPTIONAL_JSON, __METHOD__, JsonException::class, JsonException::ERROR_INPUT_IS_NOT_OF_TYPE_STRING);
+        $this->validateARequest(null, BaseTest::VALID_SCHEMA_NUMBER_OPTIONAL_JSON, __METHOD__, JsonException::getClassName(), JsonException::ERROR_INPUT_IS_NOT_OF_TYPE_STRING);
+        $this->validateARequest(true, BaseTest::VALID_SCHEMA_NUMBER_OPTIONAL_JSON, __METHOD__, JsonException::getClassName(), JsonException::ERROR_INPUT_IS_NOT_OF_TYPE_STRING);
+        $this->validateARequest(1, BaseTest::VALID_SCHEMA_NUMBER_OPTIONAL_JSON, __METHOD__, JsonException::getClassName(), JsonException::ERROR_INPUT_IS_NOT_OF_TYPE_STRING);
+        $this->validateARequest(1.4, BaseTest::VALID_SCHEMA_NUMBER_OPTIONAL_JSON, __METHOD__, JsonException::getClassName(), JsonException::ERROR_INPUT_IS_NOT_OF_TYPE_STRING);
+        $this->validateARequest([], BaseTest::VALID_SCHEMA_NUMBER_OPTIONAL_JSON, __METHOD__, JsonException::getClassName(), JsonException::ERROR_INPUT_IS_NOT_OF_TYPE_STRING);
         $this->validateARequest(function () {
             return true;
-        }, BaseTest::VALID_SCHEMA_NUMBER_OPTIONAL_JSON, __METHOD__, JsonException::class, JsonException::ERROR_INPUT_IS_NOT_OF_TYPE_STRING);
-        $this->validateARequest(curl_init(), BaseTest::VALID_SCHEMA_NUMBER_OPTIONAL_JSON, __METHOD__, JsonException::class, JsonException::ERROR_INPUT_IS_NOT_OF_TYPE_STRING);
-        $this->validateARequest(new \stdClass(), BaseTest::VALID_SCHEMA_NUMBER_OPTIONAL_JSON, __METHOD__, JsonException::class, JsonException::ERROR_INPUT_IS_NOT_OF_TYPE_STRING);
+        }, BaseTest::VALID_SCHEMA_NUMBER_OPTIONAL_JSON, __METHOD__, JsonException::getClassName(), JsonException::ERROR_INPUT_IS_NOT_OF_TYPE_STRING);
+        $this->validateARequest(curl_init(), BaseTest::VALID_SCHEMA_NUMBER_OPTIONAL_JSON, __METHOD__, JsonException::getClassName(), JsonException::ERROR_INPUT_IS_NOT_OF_TYPE_STRING);
+        $this->validateARequest(new \stdClass(), BaseTest::VALID_SCHEMA_NUMBER_OPTIONAL_JSON, __METHOD__, JsonException::getClassName(), JsonException::ERROR_INPUT_IS_NOT_OF_TYPE_STRING);
     }
 
     /**
@@ -35,15 +35,15 @@ class JsonTest extends BaseTest
     public function testSchemaMustBeString()
     {
         $this->assertTrue((new Json(BaseTest::VALID_DATA_NUMBER_JSON))->validate());
-        $this->validateARequest(BaseTest::VALID_DATA_NUMBER_JSON, true, __METHOD__, JsonException::class, JsonException::ERROR_INPUT_IS_NOT_OF_TYPE_STRING);
-        $this->validateARequest(BaseTest::VALID_DATA_NUMBER_JSON, 1, __METHOD__, JsonException::class, JsonException::ERROR_INPUT_IS_NOT_OF_TYPE_STRING);
-        $this->validateARequest(BaseTest::VALID_DATA_NUMBER_JSON, 1.4, __METHOD__, JsonException::class, JsonException::ERROR_INPUT_IS_NOT_OF_TYPE_STRING);
-        $this->validateARequest(BaseTest::VALID_DATA_NUMBER_JSON, [], __METHOD__, JsonException::class, JsonException::ERROR_INPUT_IS_NOT_OF_TYPE_STRING);
+        $this->validateARequest(BaseTest::VALID_DATA_NUMBER_JSON, true, __METHOD__, JsonException::getClassName(), JsonException::ERROR_INPUT_IS_NOT_OF_TYPE_STRING);
+        $this->validateARequest(BaseTest::VALID_DATA_NUMBER_JSON, 1, __METHOD__, JsonException::getClassName(), JsonException::ERROR_INPUT_IS_NOT_OF_TYPE_STRING);
+        $this->validateARequest(BaseTest::VALID_DATA_NUMBER_JSON, 1.4, __METHOD__, JsonException::getClassName(), JsonException::ERROR_INPUT_IS_NOT_OF_TYPE_STRING);
+        $this->validateARequest(BaseTest::VALID_DATA_NUMBER_JSON, [], __METHOD__, JsonException::getClassName(), JsonException::ERROR_INPUT_IS_NOT_OF_TYPE_STRING);
         $this->validateARequest(BaseTest::VALID_DATA_NUMBER_JSON, function () {
             return true;
-        }, __METHOD__, JsonException::class, JsonException::ERROR_INPUT_IS_NOT_OF_TYPE_STRING);
-        $this->validateARequest(BaseTest::VALID_DATA_NUMBER_JSON, curl_init(), __METHOD__, JsonException::class, JsonException::ERROR_INPUT_IS_NOT_OF_TYPE_STRING);
-        $this->validateARequest(BaseTest::VALID_DATA_NUMBER_JSON, new \stdClass(), __METHOD__, JsonException::class, JsonException::ERROR_INPUT_IS_NOT_OF_TYPE_STRING);
+        }, __METHOD__, JsonException::getClassName(), JsonException::ERROR_INPUT_IS_NOT_OF_TYPE_STRING);
+        $this->validateARequest(BaseTest::VALID_DATA_NUMBER_JSON, curl_init(), __METHOD__, JsonException::getClassName(), JsonException::ERROR_INPUT_IS_NOT_OF_TYPE_STRING);
+        $this->validateARequest(BaseTest::VALID_DATA_NUMBER_JSON, new \stdClass(), __METHOD__, JsonException::getClassName(), JsonException::ERROR_INPUT_IS_NOT_OF_TYPE_STRING);
     }
 
     /**
@@ -51,7 +51,7 @@ class JsonTest extends BaseTest
      */
     public function testDataIsStringButIsValidEmptyJSON()
     {
-        $this->validateARequest(BaseTest::INVALID_JSON, BaseTest::VALID_SCHEMA_NUMBER_OPTIONAL_JSON, __METHOD__, ParseException::class, ParseException::ERROR_EXPECTED_INPUT_TO_BE_SOMETHING_ELSE);
+        $this->validateARequest(BaseTest::INVALID_JSON, BaseTest::VALID_SCHEMA_NUMBER_OPTIONAL_JSON, __METHOD__, ParseException::getClassName(), ParseException::ERROR_EXPECTED_INPUT_TO_BE_SOMETHING_ELSE);
     }
 
     /**

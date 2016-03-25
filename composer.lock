@@ -4,21 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "6f02e2a84cd46d256c9170ff0507bd62",
-    "content-hash": "e31ad96696f8e528367852c2940a8214",
+    "hash": "a93e9d8500b99503483fc6283a8b7227",
+    "content-hash": "7b1e98040e2157e9a6e1858fc89f87b6",
     "packages": [
         {
             "name": "cmpayments/jsonlint",
-            "version": "v0.0.4",
+            "version": "v0.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cmpayments/jsonlint.git",
-                "reference": "1aa21d7b941bf3b89e1178efde4fcada2b76682c"
+                "reference": "ed993ebd58e280861d69ba9c4a59ac8fbcfa5ab9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cmpayments/jsonlint/zipball/1aa21d7b941bf3b89e1178efde4fcada2b76682c",
-                "reference": "1aa21d7b941bf3b89e1178efde4fcada2b76682c",
+                "url": "https://api.github.com/repos/cmpayments/jsonlint/zipball/ed993ebd58e280861d69ba9c4a59ac8fbcfa5ab9",
+                "reference": "ed993ebd58e280861d69ba9c4a59ac8fbcfa5ab9",
                 "shasum": ""
             },
             "require": {
@@ -56,7 +56,7 @@
                 "syntaxcheck",
                 "validator"
             ],
-            "time": "2016-01-21 09:44:34"
+            "time": "2016-03-25 10:10:29"
         }
     ],
     "packages-dev": [],
