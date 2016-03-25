@@ -64,7 +64,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
         }
 
         $filename = $cache->getFilename();
-        if (empty($cache->getFilename())) {
+        if (empty($filename)) {
 
             $cache->setFilename(md5(json_encode($schema)) . '.php');
         }
