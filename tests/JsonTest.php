@@ -83,6 +83,10 @@ class JsonTest extends BaseTest
                 $this->assertFalse($exceptionCode, $method . '; must result in an error but it didn\'t');
             } else {
 
+                if ($data === null) {
+                    die(var_dump(__FILE__ . ':' . __LINE__, $errors, $exceptionClass, $exceptionCode));
+                }
+
                 // verify output structure
                 $this->assertEquals(isset($errors[Json::ERRORS]), isset($errors[JSON::WARNINGS]));
                 $this->assertEquals(count($errors[Json::ERRORS]), 1);
