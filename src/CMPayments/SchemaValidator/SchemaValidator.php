@@ -20,7 +20,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
     private $cacheReferencedSchemas = [];
 
     /**
-     * @var null
+     * @var null|object
      */
     private $rootSchema = null;
 
@@ -92,8 +92,8 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
     /**
      * Validate the Data
      *
+     * @param \stdClass $schema
      * @param             $data
-     * @param             $schema
      * @param null|string $path
      *
      * @return bool
@@ -149,7 +149,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
                     || (!isset($schema->additionalProperties) && (isset($this->rootSchema->additionalProperties) && !$this->rootSchema->additionalProperties))
                 ) {
                     // $schema->additionalProperties says NO, log that a fields is missing
-                    $this->addError(ValidateException::ERROR_USER_DATA_PROPERTY_IS_NOT_AN_ALLOWED_PROPERTY, ($path . '/' . $property));
+                    $this->addError(ValidateException::ERROR_USER_DATA_PROPERTY_IS_NOT_AN_ALLOWED_PROPERTY, [$path . '/' . $property]);
                 }
             }
             // Everything else
@@ -189,13 +189,13 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
             $method = 'validate' . ucfirst($type);
             $this->$method($data, $schema, $path);
 
-            // check for $schema->format
+            // check for format property on schema
             $this->validateFormat($data, $schema, $path);
 
-            // check for $schema->enum
+            // check for enum property on schema
             $this->validateEnum($data, $schema, $path);
 
-            // check for $schema->pattern (regex)
+            // check for pattern (regex) property on schema
             $this->validateRegex($data, $schema, $path);
 
             // @TODO; check for $schema->oneOf { format: "" }, { format: "" }
@@ -230,7 +230,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
         // check if the given schema is not empty
         if (empty($schemaInArray)) {
 
-            throw new ValidateSchemaException(ValidateSchemaException::ERROR_SCHEMA_CANNOT_BE_EMPTY_IN_PATH, $path);
+            throw new ValidateSchemaException(ValidateSchemaException::ERROR_SCHEMA_CANNOT_BE_EMPTY_IN_PATH, [$path]);
         }
 
         // validate mandatory $schema properties
@@ -248,7 +248,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
             // check if the given schema is not empty
             if (empty($schemaPropertiesInArray)) {
 
-                throw new ValidateSchemaException(ValidateSchemaException::ERROR_SCHEMA_CANNOT_BE_EMPTY_IN_PATH, ($path . '/properties'));
+                throw new ValidateSchemaException(ValidateSchemaException::ERROR_SCHEMA_CANNOT_BE_EMPTY_IN_PATH, [$path . '/properties']);
             }
 
             foreach ($schema->properties as $property => $childSchema) {
@@ -258,7 +258,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
                 // when an object key is empty it becomes '_empty_' by json_decode(), catch it since this is not valid
                 if ($property === '_empty_') {
 
-                    throw new ValidateSchemaException(ValidateSchemaException::ERROR_EMPTY_KEY_NOT_ALLOWED_IN_OBJECT, $subPath);
+                    throw new ValidateSchemaException(ValidateSchemaException::ERROR_EMPTY_KEY_NOT_ALLOWED_IN_OBJECT, [$subPath]);
                 }
 
                 // check if $childSchema is an object to begin with
@@ -435,11 +435,9 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
         // set the correct $expected
         switch (1) {
             case ($property === BaseValidator::TYPE):
-
                 $expected = $this->getValidTypes();
                 break;
             case ($property === BaseValidator::FORMAT):
-
                 $expected = $this->getValidFormats();
                 break;
             default:
@@ -536,7 +534,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
             return $this->cacheReferencedSchemas[$schema->{'$ref'}];
         }
 
-        $referencedSchema = $reference = null;
+        $referencedSchema = null;
 
         // fetch local reference
         if (strpos($schema->{'$ref'}, '#/definitions/') !== false) {

@@ -26,7 +26,7 @@ trait FormatTrait
 
         switch ($schema->format) {
 
-            // BaseValidator::DATE
+            // DATE
             case BaseValidator::DATE:
                 if (!$date = $this->validateDateTime($data, 'Y-m-d')) {
 
@@ -34,18 +34,18 @@ trait FormatTrait
                 }
                 break;
 
-            // BaseValidator::DATETIME
+            // DATETIME
             case BaseValidator::DATETIME:
                 if (!$this->validateDateTime($data, 'Y-m-d\TH:i:s\Z')
                     && !$this->validateDateTime($data, 'Y-m-d\TH:i:s.u\Z')
-                    && !$this->validateDateTime($data, 'Y-m-d\TH:i:sP')
-                    && !$this->validateDateTime($data, 'Y-m-d\TH:i:sO')
+                    && !$this->validateDateTime($data, \DateTime::RFC3339)
+                    && !$this->validateDateTime($data, \DateTime::ISO8601)
                 ) {
                     $this->addError(ValidateException::ERROR_USER_FORMAT_INVALID_DATETIME, [$data, $path]);
                 }
                 break;
 
-            // BaseValidator::EMAIL
+            // EMAIL
             case BaseValidator::EMAIL:
                 if (is_null(filter_var($data, FILTER_VALIDATE_EMAIL, FILTER_NULL_ON_FAILURE))) {
 
@@ -53,7 +53,7 @@ trait FormatTrait
                 }
                 break;
 
-            // BaseValidator::TIME
+            // TIME
             case BaseValidator::TIME:
                 if (!$this->validateDateTime($data, 'H:i:s')) {
 
@@ -61,7 +61,7 @@ trait FormatTrait
                 }
                 break;
 
-            // BaseValidator::UTC_SECONDS (in epoch seconds)
+            // UTC_SECONDS (in epoch seconds)
             case BaseValidator::UTC_SECONDS:
                 if (!$this->validateDateTime((string)$data, 'U')) { // U = Seconds since the Unix Epoch
 
@@ -69,7 +69,7 @@ trait FormatTrait
                 }
                 break;
 
-            // BaseValidator::URL
+            // URL
             case BaseValidator::URL:
 
                 if (filter_var($data, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED | FILTER_FLAG_HOST_REQUIRED) === false) {
@@ -98,4 +98,12 @@ trait FormatTrait
 
         return $datetime === $dt->format($format);
     }
+
+    /**
+     * @param int   $code
+     * @param array $args
+     *
+     * @return mixed
+     */
+    abstract public function addError($code, array $args = []);
 }

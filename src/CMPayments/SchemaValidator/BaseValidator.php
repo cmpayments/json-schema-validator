@@ -83,6 +83,4 @@ class BaseValidator
     {
         return $this->validFormats;
     }
-
-
 }

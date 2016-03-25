@@ -31,4 +31,12 @@ trait StringTrait
             $this->addError(ValidateException::ERROR_USER_STRING_MAXIMUM_CHECK, [$path, $schema->maxLength, $data, $currentLength]);
         }
     }
+
+    /**
+     * @param int   $code
+     * @param array $args
+     *
+     * @return mixed
+     */
+    abstract public function addError($code, array $args = []);
 }

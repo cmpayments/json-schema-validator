@@ -35,4 +35,23 @@ trait EnumTrait
             );
         }
     }
+
+    /**
+     * @param int   $code
+     * @param array $args
+     *
+     * @return mixed
+     */
+    abstract public function addError($code, array $args = []);
+
+    /**
+     * Returns a valid representation of 'items' (or other value)
+     *
+     * @param int    $count
+     * @param string $single
+     * @param string $plural
+     *
+     * @return string
+     */
+    abstract public function conjugationObject($count, $single = 'item', $plural = 'items');
 }

@@ -92,4 +92,12 @@ trait RegexTrait
             $this->addError(ValidateException::ERROR_USER_REGEX_GENERAL_ERROR_OCCURRED, [$schema->pattern, $data]);
         }
     }
+
+    /**
+     * @param int   $code
+     * @param array $args
+     *
+     * @return mixed
+     */
+    abstract public function addError($code, array $args = []);
 }

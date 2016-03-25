@@ -3,6 +3,7 @@
 use CMPayments\Cache\Cache;
 use CMPayments\SchemaValidator\BaseValidator;
 use CMPayments\SchemaValidator\Exceptions\ValidateException;
+use CMPayments\SchemaValidator\Exceptions\ValidateSchemaException;
 
 /**
  * Class ErrorTrait
@@ -12,12 +13,29 @@ use CMPayments\SchemaValidator\Exceptions\ValidateException;
  */
 trait ErrorTrait
 {
+    /**
+     * @var null|Cache
+     */
+    protected $cache;
+
+    /**
+     * @var array
+     */
     protected $errors = [];
 
+    /**
+     * @var array
+     */
     private $stringifiedOrdinals = ['th', 'st', 'nd', 'rd'];
 
+    /**
+     * @var string
+     */
     private $prepositionDefault = 'a';
 
+    /**
+     * @var array
+     */
     private $prepositions = [
         BaseValidator::_ARRAY  => 'an',
         BaseValidator::BOOLEAN => 'a',
@@ -30,7 +48,7 @@ trait ErrorTrait
     ];
 
     /**
-     * @return null
+     * @return array
      */
     public function getErrors()
     {
@@ -38,10 +56,10 @@ trait ErrorTrait
     }
 
     /**
-     * @param       $code
+     * @param int   $code
      * @param array $args
      */
-    protected function addError($code, $args = [])
+    protected function addError($code, array $args = [])
     {
         $message        = (new ValidateException($code, $args))->getMessage();
         $this->errors[] = compact('code', 'args', 'message');
@@ -63,7 +81,7 @@ trait ErrorTrait
      * @param $type
      *
      * @return mixed
-     * @throws ValidateException
+     * @throws ValidateSchemaException
      */
     public function getPreposition($type)
     {
@@ -74,7 +92,7 @@ trait ErrorTrait
             // output exception when $this->config['debug'] === true
             if (($this->cache instanceof Cache) && $this->cache->getDebug()) {
 
-                throw new ValidateException(ValidateException::ERROR_INPUT_IS_NOT_A_VALID_PREPOSITION, $type);
+                throw new ValidateSchemaException(ValidateSchemaException::ERROR_INPUT_IS_NOT_A_VALID_PREPOSITION, $type);
             } else {
                 return $this->prepositionDefault;
             }
@@ -86,7 +104,7 @@ trait ErrorTrait
     /**
      * Returns a valid conjugation of the verb 'to be'
      *
-     * @param $count
+     * @param int $count
      *
      * @return string
      */
@@ -99,7 +117,7 @@ trait ErrorTrait
     /**
      * Returns a valid representation of 'items' (or other value)
      *
-     * @param        $count
+     * @param int    $count
      * @param string $single
      * @param string $plural
      *
@@ -113,7 +131,7 @@ trait ErrorTrait
     /**
      * Converts a number to a ordinal
      *
-     * @param $number
+     * @param int $number
      *
      * @return string
      */

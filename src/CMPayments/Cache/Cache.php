@@ -14,6 +14,11 @@ class Cache
     /**
      * @var array
      */
+    private $options = [];
+
+    /**
+     * @var array
+     */
     private $passthru = [];
 
     /**
@@ -93,7 +98,7 @@ class Cache
         // check is the cache filename option is set
         if (!isset($this->options['filename'])) {
 
-            throw new CacheException(CacheException::ERROR_CACHE_FILENAME_NOT_SET, '$options[\'filename\']');
+            throw new CacheException(CacheException::ERROR_CACHE_FILENAME_NOT_SET, ['$options[\'filename\']']);
         }
 
         return $this->options['directory'] . $this->options['filename'];

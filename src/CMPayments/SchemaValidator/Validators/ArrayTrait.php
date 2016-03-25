@@ -19,7 +19,7 @@ trait ArrayTrait
      */
     public function validateArray($data, $schema, $path)
     {
-        // check for $schema->minItems
+        // check for minItems property
         if (isset($schema->minItems) && (count($data) < $schema->minItems)) {
 
             $count = count($data);
@@ -30,7 +30,7 @@ trait ArrayTrait
             );
         }
 
-        // check for $schema->maxItems
+        // check for maxItems property
         if (isset($schema->maxItems) && (count($data) > $schema->maxItems)) {
 
             $count = count($data);
@@ -41,12 +41,12 @@ trait ArrayTrait
             );
         }
 
-        // check for $schema->uniqueItems
+        // check for uniqueItems property
         if (isset($schema->uniqueItems) && $schema->uniqueItems && ($count = count($data))) {
 
             if (count(array_unique($data, SORT_REGULAR)) !== $count) {
 
-                $this->addError(ValidateException::ERROR_USER_ARRAY_NO_DUPLICATES_ALLOWED, $path);
+                $this->addError(ValidateException::ERROR_USER_ARRAY_NO_DUPLICATES_ALLOWED, [$path]);
             }
         }
 
@@ -66,4 +66,39 @@ trait ArrayTrait
             $this->validate($schema->items, $this->numberToOrdinal($property + 1) . ' child', $row, $path);
         }
     }
+
+    /**
+     * @param int   $code
+     * @param array $args
+     *
+     * @return mixed
+     */
+    abstract public function addError($code, array $args = []);
+
+    /**
+     * @param int $number
+     *
+     * @return mixed
+     */
+    abstract public function numberToOrdinal($number);
+
+    /**
+     * Returns a valid representation of 'items' (or other value)
+     *
+     * @param int    $count
+     * @param string $single
+     * @param string $plural
+     *
+     * @return string
+     */
+    abstract public function conjugationObject($count, $single = 'item', $plural = 'items');
+
+    /**
+     * Returns a valid conjugation of the verb 'to be'
+     *
+     * @param int $count
+     *
+     * @return string
+     */
+    abstract public function conjugationToBe($count);
 }

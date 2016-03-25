@@ -85,7 +85,7 @@ class BaseException extends \ErrorException
      *
      * @return string
      */
-    static public function getClassName(){
+    public static function getClassName(){
 
         return get_called_class();
     }

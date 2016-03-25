@@ -39,6 +39,11 @@ class Json
     private $isValid = false;
 
     /**
+     * @var null|string
+     */
+    private $encodedJSON;
+
+    /**
      * @var bool
      */
     private $validatedInput = null;
@@ -154,9 +159,9 @@ class Json
     /**
      * Validates if a string is valid JSON and converts it back to an object
      *
-     * @param string $data
-     * @param string $type
-     * @param Cache  $cache
+     * @param string|null|object $data
+     * @param string             $type
+     * @param Cache              $cache
      *
      * @return mixed
      * @throws JsonException
@@ -171,7 +176,7 @@ class Json
             throw new JsonException(JsonException::ERROR_INPUT_IS_NOT_OF_TYPE_STRING, [$type, gettype($data)]);
         } elseif (empty($data)) {
 
-            throw new JsonException(JsonException::ERROR_INPUT_IS_OF_TYPE_STRING_BUT_EMPTY, $type);
+            throw new JsonException(JsonException::ERROR_INPUT_IS_OF_TYPE_STRING_BUT_EMPTY, [$type]);
         }
 
         if ($type === self::SCHEMA) {
