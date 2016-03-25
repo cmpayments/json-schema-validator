@@ -18,8 +18,8 @@ class CacheTest extends BaseTest
     public function testCacheDirectoryMustBeWritableWhenDebugIsOn()
     {
         $optionsList = [
-            $this->configDebugTrueCacheDirMissing,
-            $this->configDebugFalseCacheDirMissing
+            ['debug' => true, 'directory' => __DIR__ . '/non-existent/'],
+            ['debug' => false, 'directory' => __DIR__ . '/non-existent/']
         ];
 
         foreach($optionsList as $options) {
