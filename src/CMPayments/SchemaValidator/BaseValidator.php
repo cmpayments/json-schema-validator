@@ -5,6 +5,7 @@ use CMPayments\SchemaValidator\Validators\ArrayTrait;
 use CMPayments\SchemaValidator\Validators\EnumTrait;
 use CMPayments\SchemaValidator\Validators\ErrorTrait;
 use CMPayments\SchemaValidator\Validators\FormatTrait;
+use CMPayments\SchemaValidator\Validators\IntegerTrait;
 use CMPayments\SchemaValidator\Validators\NumberTrait;
 use CMPayments\SchemaValidator\Validators\StringTrait;
 use CMPayments\SchemaValidator\Validators\RegexTrait;
@@ -22,6 +23,7 @@ class BaseValidator
     use ArrayTrait;
     use EnumTrait;
     use FormatTrait;
+    use IntegerTrait;
     use NumberTrait;
     use StringTrait;
     use RegexTrait;
@@ -52,6 +54,7 @@ class BaseValidator
     private $validTypes = [
         self::_ARRAY,
         self::BOOLEAN,
+        self::INTEGER,
         self::NUMBER,
         self::OBJECT,
         self::STRING

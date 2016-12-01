@@ -355,11 +355,19 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
             ]);
         }
 
-        if (isset($schema->type) && ($schema->type === BaseValidator::NUMBER)) {
+        if (isset($schema->type) && ($schema->type === BaseValidator::INTEGER)) {
 
             $input = array_merge($input, [
                 sprintf('minimum|is_int|%s', BaseValidator::INTEGER),
                 sprintf('maximum|is_int|%s', BaseValidator::INTEGER)
+            ]);
+        }
+
+        if (isset($schema->type) && ($schema->type === BaseValidator::NUMBER)) {
+
+            $input = array_merge($input, [
+                sprintf('minimum|is_numeric|%s', BaseValidator::NUMBER),
+                sprintf('maximum|is_numeric|%s', BaseValidator::NUMBER)
             ]);
         }
 
