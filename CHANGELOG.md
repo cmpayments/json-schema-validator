@@ -7,6 +7,10 @@
 
 ### Important
 
+### changelog [v0.1.0] – 02/12/2016
+- Implemented and improved float support for the 'Number' type. Credits: @Bas Peters
+- (not part of this release specifically but started semantic versioning as of this release because up until now it wasn’t done properly)
+
 ### changelog [v0.0.11] – 25/03/2016
 - fixed tests
 - added _empty.php (for uit tests) to the project
