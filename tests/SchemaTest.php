@@ -58,7 +58,8 @@ class SchemaTest extends BaseTest
                 json_decode('{"type": "object", "properties": {"id": {"type": "string", "format": "non-existent"}}}')
             ],
             ValidateSchemaException::ERROR_SCHEMA_PROPERTY_TYPE_NOT_VALID            => [
-                json_decode('{"type": "object", "properties": {"id": {"type": "string", "minLength": "1"}}}')
+                json_decode('{"type": "object", "properties": {"id": {"type": "string", "minLength": "1"}}}'),
+                json_decode('{"type": "object", "properties": {"id": {"type": ["string", null]}}}'),
             ],
             ValidateSchemaException::ERROR_SCHEMA_MAX_PROPERTY_CANNOT_NOT_BE_ZERO    => [
                 json_decode('{"type": "object", "properties": {"id": {"type": "string", "maxLength": 0}}}'),

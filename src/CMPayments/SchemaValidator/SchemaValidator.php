@@ -305,7 +305,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
     private function validateSchemaMandatoryProperties($schema, $path)
     {
         $input = [
-            sprintf('type|is_string:is_array|%s', BaseValidator::STRING),
+            sprintf('type|is_string:is_array_of_strings|%s', BaseValidator::STRING),
         ];
 
         if (isset($schema->type) && $schema->type === BaseValidator::_ARRAY) {
@@ -404,7 +404,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
                 $isValid = false;
 
                 foreach ($methods as $checkMethod) {
-                    if ($checkMethod($schema->$property)) {
+                    if ($this->checkPropertyWithFunction($schema->$property, $checkMethod)) {
                         $isValid = true;
                         break;
                     }
@@ -730,5 +730,57 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
         }
 
         return $type;
+    }
+
+    /**
+     * Validate a property with a specific function.
+     *
+     * The function can be either an existing (global) function, or a function that matches an existing method
+     * of the SchemaValidator class after prefixing with custom_validate_ and conversion from snake case to camel case.
+     *
+     * @param $propertyValue
+     * @param $function
+     * @return boolean
+     * @throws ValidateSchemaException
+     */
+    private function checkPropertyWithFunction($propertyValue, $function)
+    {
+        //  Use a custom validation function, if it exists
+        $customValidatorName = 'custom_validate_' . $function;
+        $customValidatorFunction = str_replace('_', '', ucfirst($customValidatorName));
+        if (method_exists($this, $customValidatorFunction)) {
+            return $this->$customValidatorFunction($propertyValue);
+        }
+
+        //  Use global function
+        if (function_exists($function)) {
+            return $function($propertyValue);
+        }
+
+        throw new ValidateSchemaException(
+            ValidateSchemaException::ERROR_SCHEMA_PROPERTY_VALIDATOR_DOES_NOT_EXIST,
+            [$function]
+        );
+    }
+
+    /**
+     * Validate that a property value is an array and all elements in the array are strings.
+     *
+     * @param $data
+     * @return bool
+     */
+    private function customValidateIsArrayOfStrings($data)
+    {
+        if (!is_array($data)) {
+            return false;
+        }
+
+        foreach ($data as $item) {
+            if (!is_string($item)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
