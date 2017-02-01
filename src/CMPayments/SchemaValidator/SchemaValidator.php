@@ -305,7 +305,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
     private function validateSchemaMandatoryProperties($schema, $path)
     {
         $input = [
-            sprintf('type|is_string|%s', BaseValidator::STRING),
+            sprintf('type|is_string:is_array|%s', BaseValidator::STRING),
         ];
 
         if (isset($schema->type) && $schema->type === BaseValidator::_ARRAY) {
@@ -400,7 +400,16 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
             // check if $property is of a certain type
             if (isset($schema->$property)) {
 
-                if (!$method($schema->$property)) {
+                $methods = explode(':', $method);
+                $isValid = false;
+
+                foreach ($methods as $checkMethod) {
+                    if ($checkMethod($schema->$property)) {
+                        $isValid = true;
+                        break;
+                    }
+                }
+                if (!$isValid) {
 
                     $actualType = gettype($schema->$property);
 
@@ -454,14 +463,17 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
         }
 
         // check if $expected contains the $property
-        if (!in_array($schema->$property, $expected)) {
+        $values = (array) $schema->$property;
+        foreach ($values as $value) {
+            if (!in_array($value, $expected)) {
 
-            $count = count($expected);
+                $count = count($expected);
 
-            throw new ValidateSchemaException(
-                ValidateSchemaException::ERROR_SCHEMA_PROPERTY_VALUE_IS_NOT_VALID,
-                [$schema->$property, $path, $property, $this->conjugationObject($count, '', 'any of '), $this->conjugationObject($count), implode('\', \'', $expected)]
-            );
+                throw new ValidateSchemaException(
+                    ValidateSchemaException::ERROR_SCHEMA_PROPERTY_VALUE_IS_NOT_VALID,
+                    [$value, $path, $property, $this->conjugationObject($count, '', 'any of '), $this->conjugationObject($count), implode('\', \'', $expected)]
+                );
+            }
         }
     }
 
@@ -683,10 +695,12 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
         }
 
         // check if given type matches the expected type, if not add verbose error
-        if ($type !== $schema->type) {
+        $type = strtolower($type);
+        $types = (array) $schema->type;
+        if (!in_array($type, $types)) {
 
             $msg    = ValidateException::ERROR_USER_DATA_VALUE_DOES_NOT_MATCH_CORRECT_TYPE_1;
-            $params = [$path, $this->getPreposition($schema->type), $schema->type, $this->getPreposition($type), $type];
+            $params = [$path, $this->getPreposition($schema->type), implode(' or ', $types), $this->getPreposition($type), $type];
 
             if (!in_array($type, [BaseValidator::OBJECT, BaseValidator::CLOSURE, BaseValidator::_ARRAY, BaseValidator::BOOLEAN])) {
 

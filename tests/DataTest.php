@@ -22,7 +22,9 @@ class DataTest extends BaseTest
             '{"type": "string"}'                                                                                   => 'test123',
             '{"type": "string", "enum": ["test"]}'                                                                 => 'test',
             '{"type": "array","items": {"type": "string"}}'                                                        => ['test123'],
-            '{"type": "object", "properties": {"zipcode": {"type": "string", "pattern" : "[0-9]{4}[a-zA-Z]{2}"}}}' => json_decode('{"zipcode" : "48118EW"}')
+            '{"type": ["string", "null"]}'                                                                         => 'test213',
+            '{"type": ["null", "string"]}'                                                                         => NULL,
+            '{"type": "object", "properties": {"zipcode": {"type": "string", "pattern" : "[0-9]{4}[a-zA-Z]{2}"}}}' => json_decode('{"zipcode" : "48118EW"}'),
         ];
 
         return $this->provideArrayForValidation($valid);
