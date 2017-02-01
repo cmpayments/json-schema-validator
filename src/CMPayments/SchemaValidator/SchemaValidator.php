@@ -419,6 +419,15 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
                     );
                 }
 
+                if (is_array($schema->$property) && count($schema->$property) != count(array_unique($schema->$property))) {
+
+                    throw new ValidateSchemaException(
+                        ValidateSchemaException::ERROR_SCHEMA_PROPERTY_TYPES_NOT_UNIQUE,
+                        [$path, str_replace('"', "'", json_encode($schema->$property)), str_replace('"', "'", json_encode(array_unique($schema->$property)))]
+                    );
+
+                }
+
                 // check if a $property' value must match a list of predefined values
                 $this->validateSchemaPropertyValue($schema, $property, $path);
             }

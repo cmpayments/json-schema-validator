@@ -103,7 +103,10 @@ class SchemaTest extends BaseTest
             /** @TODO; Write test */
             ValidateSchemaException::ERROR_INPUT_IS_NOT_A_VALID_PREPOSITION          => [
 
-            ]
+            ],
+            ValidateSchemaException::ERROR_SCHEMA_PROPERTY_TYPES_NOT_UNIQUE          => [
+                json_decode('{"type": "object", "properties": {"id": {"type": ["number", "number"]}}, "required": true}'),
+            ],
         ];
 
         $this->executeExceptionValidation($exceptions);
