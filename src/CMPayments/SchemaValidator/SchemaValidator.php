@@ -305,7 +305,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
     private function validateSchemaMandatoryProperties($schema, $path)
     {
         $input = [
-            sprintf('type|is_string|%s', BaseValidator::STRING),
+            sprintf('type|is_string:is_array_of_strings|%s', BaseValidator::STRING),
         ];
 
         if (isset($schema->type) && $schema->type === BaseValidator::_ARRAY) {
@@ -400,7 +400,16 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
             // check if $property is of a certain type
             if (isset($schema->$property)) {
 
-                if (!$method($schema->$property)) {
+                $methods = explode(':', $method);
+                $isValid = false;
+
+                foreach ($methods as $checkMethod) {
+                    if ($this->checkPropertyWithFunction($schema->$property, $checkMethod)) {
+                        $isValid = true;
+                        break;
+                    }
+                }
+                if (!$isValid) {
 
                     $actualType = gettype($schema->$property);
 
@@ -408,6 +417,15 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
                         ValidateSchemaException::ERROR_SCHEMA_PROPERTY_TYPE_NOT_VALID,
                         [$path, $property, $this->getPreposition($expectedType), $expectedType, $this->getPreposition($actualType), $actualType]
                     );
+                }
+
+                if (is_array($schema->$property) && count($schema->$property) != count(array_unique($schema->$property))) {
+
+                    throw new ValidateSchemaException(
+                        ValidateSchemaException::ERROR_SCHEMA_PROPERTY_TYPES_NOT_UNIQUE,
+                        [$path, str_replace('"', "'", json_encode($schema->$property)), str_replace('"', "'", json_encode(array_unique($schema->$property)))]
+                    );
+
                 }
 
                 // check if a $property' value must match a list of predefined values
@@ -454,14 +472,17 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
         }
 
         // check if $expected contains the $property
-        if (!in_array($schema->$property, $expected)) {
+        $values = (array) $schema->$property;
+        foreach ($values as $value) {
+            if (!in_array($value, $expected)) {
 
-            $count = count($expected);
+                $count = count($expected);
 
-            throw new ValidateSchemaException(
-                ValidateSchemaException::ERROR_SCHEMA_PROPERTY_VALUE_IS_NOT_VALID,
-                [$schema->$property, $path, $property, $this->conjugationObject($count, '', 'any of '), $this->conjugationObject($count), implode('\', \'', $expected)]
-            );
+                throw new ValidateSchemaException(
+                    ValidateSchemaException::ERROR_SCHEMA_PROPERTY_VALUE_IS_NOT_VALID,
+                    [$value, $path, $property, $this->conjugationObject($count, '', 'any of '), $this->conjugationObject($count), implode('\', \'', $expected)]
+                );
+            }
         }
     }
 
@@ -683,10 +704,12 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
         }
 
         // check if given type matches the expected type, if not add verbose error
-        if ($type !== $schema->type) {
+        $type = strtolower($type);
+        $types = (array) $schema->type;
+        if (!in_array($type, $types)) {
 
             $msg    = ValidateException::ERROR_USER_DATA_VALUE_DOES_NOT_MATCH_CORRECT_TYPE_1;
-            $params = [$path, $this->getPreposition($schema->type), $schema->type, $this->getPreposition($type), $type];
+            $params = [$path, $this->getPreposition($schema->type), implode(' or ', $types), $this->getPreposition($type), $type];
 
             if (!in_array($type, [BaseValidator::OBJECT, BaseValidator::CLOSURE, BaseValidator::_ARRAY, BaseValidator::BOOLEAN])) {
 
@@ -707,5 +730,57 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
         }
 
         return $type;
+    }
+
+    /**
+     * Validate a property with a specific function.
+     *
+     * The function can be either an existing (global) function, or a function that matches an existing method
+     * of the SchemaValidator class after prefixing with custom_validate_ and conversion from snake case to camel case.
+     *
+     * @param $propertyValue
+     * @param $function
+     * @return boolean
+     * @throws ValidateSchemaException
+     */
+    private function checkPropertyWithFunction($propertyValue, $function)
+    {
+        //  Use a custom validation function, if it exists
+        $customValidatorName = 'custom_validate_' . $function;
+        $customValidatorFunction = str_replace('_', '', ucfirst($customValidatorName));
+        if (method_exists($this, $customValidatorFunction)) {
+            return $this->$customValidatorFunction($propertyValue);
+        }
+
+        //  Use global function
+        if (function_exists($function)) {
+            return $function($propertyValue);
+        }
+
+        throw new ValidateSchemaException(
+            ValidateSchemaException::ERROR_SCHEMA_PROPERTY_VALIDATOR_DOES_NOT_EXIST,
+            [$function]
+        );
+    }
+
+    /**
+     * Validate that a property value is an array and all elements in the array are strings.
+     *
+     * @param $data
+     * @return bool
+     */
+    private function customValidateIsArrayOfStrings($data)
+    {
+        if (!is_array($data)) {
+            return false;
+        }
+
+        foreach ($data as $item) {
+            if (!is_string($item)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

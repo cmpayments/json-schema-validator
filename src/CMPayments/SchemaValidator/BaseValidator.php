@@ -57,7 +57,8 @@ class BaseValidator
         self::INTEGER,
         self::NUMBER,
         self::OBJECT,
-        self::STRING
+        self::STRING,
+        self::_NULL
     ];
 
     // Valid formats for string typed items

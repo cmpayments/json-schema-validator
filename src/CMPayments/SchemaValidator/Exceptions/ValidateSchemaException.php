@@ -29,6 +29,8 @@ class ValidateSchemaException extends BaseException
     const ERROR_NO_DATA_WAS_FOUND_IN_REMOTE_SCHEMA        = 17;
     const ERROR_NO_VALID_JSON_WAS_FOUND_IN_REMOTE_SCHEMA  = 18;
     const ERROR_INPUT_IS_NOT_A_VALID_PREPOSITION          = 19;
+    const ERROR_SCHEMA_PROPERTY_TYPES_NOT_UNIQUE          = 20;
+    const ERROR_SCHEMA_PROPERTY_VALIDATOR_DOES_NOT_EXIST  = 20;
 
     protected $messages = [
         self::ERROR_SCHEMA_IS_NOT_VALID_JSON                  => 'Schema is not valid JSON',
@@ -50,6 +52,8 @@ class ValidateSchemaException extends BaseException
         self::ERROR_NO_DATA_WAS_FOUND_IN_REMOTE_SCHEMA        => 'No data found at \'%s\'',
         self::ERROR_NO_VALID_JSON_WAS_FOUND_IN_REMOTE_SCHEMA  => 'No valid JSON Schema found at \'%s\'',
         self::ERROR_INPUT_IS_NOT_A_VALID_PREPOSITION          => '\'%s\' is not a valid preposition',
+        self::ERROR_SCHEMA_PROPERTY_TYPES_NOT_UNIQUE          => '\'%s.type\' may not contain duplicate elements. Replace %s with %s',
+        self::ERROR_SCHEMA_PROPERTY_VALIDATOR_DOES_NOT_EXIST  => 'Validator \'%s\' does not exist. Use an existing function or extend the SchemaValidator.',
     ];
 
     /**
