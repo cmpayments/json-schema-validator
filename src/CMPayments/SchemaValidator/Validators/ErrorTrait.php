@@ -85,8 +85,8 @@ trait ErrorTrait
      */
     public function getPreposition($type)
     {
-        $type = ((array) $type)[0];
-        $type = strtolower($type);
+        $types = (array) $type;
+        $type = strtolower($types[0]);
 
         if (!isset($this->prepositions[$type])) {
 
