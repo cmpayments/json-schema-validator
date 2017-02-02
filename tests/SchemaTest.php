@@ -55,7 +55,8 @@ class SchemaTest extends BaseTest
             ],
             ValidateSchemaException::ERROR_SCHEMA_PROPERTY_VALUE_IS_NOT_VALID        => [
                 json_decode('{"type": "object", "properties": {"id": {"type": "non-existent-value"}}}'),
-                json_decode('{"type": "object", "properties": {"id": {"type": "string", "format": "non-existent"}}}')
+                json_decode('{"type": "object", "properties": {"id": {"type": "string", "format": "non-existent"}}}'),
+                json_decode('{"type":["string", "null", "not-allowed-value"]}')
             ],
             ValidateSchemaException::ERROR_SCHEMA_PROPERTY_TYPE_NOT_VALID            => [
                 json_decode('{"type": "object", "properties": {"id": {"type": "string", "minLength": "1"}}}')
@@ -103,6 +104,19 @@ class SchemaTest extends BaseTest
             /** @TODO; Write test */
             ValidateSchemaException::ERROR_INPUT_IS_NOT_A_VALID_PREPOSITION          => [
 
+            ],
+            ValidateSchemaException::ERROR_SCHEMA_PROPERTY_TYPE_IS_ARRAY_BUT_VALUES_ARE_NOT_UNIQUE => [
+                json_decode('{"type":["string", "null", "null"]}'),
+                json_decode('{"type":["string", "null", "string"]}')
+            ],
+            ValidateSchemaException::ERROR_SCHEMA_PROPERTY_TYPE_IS_ARRAY_BUT_VALUES_AR_NOT_ALL_STRINGS => [
+                json_decode('{"type":["string", "null", true]}'),
+                json_decode('{"type":["string", "null", 1]}'),
+                json_decode('{"type":["string", "null", 1.4]}'),
+                json_decode('{"type":["string", "null", []]}'),
+                json_decode('{"type":["string", "null", {}]}'),
+                json_decode('{"type":["string", "null", null]}'),
+                json_decode('{"type":["string", "null", ""]}'),
             ]
         ];
 

@@ -54,8 +54,8 @@ class BaseValidator
     private $validTypes = [
         self::_ARRAY,
         self::BOOLEAN,
-        self::INTEGER,
         self::NUMBER,
+        self::_NULL,
         self::OBJECT,
         self::STRING
     ];

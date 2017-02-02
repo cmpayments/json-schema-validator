@@ -46,8 +46,8 @@ class ValidateException extends BaseException
     protected $messages = [
         self::ERROR_USER_CHECK_IF_ALL_REQUIRED_PROPERTIES_ARE_SET => 'The mandatory Data %s: \'%s\' %s not set in \'%s\'',
         self::ERROR_USER_DATA_PROPERTY_IS_NOT_AN_ALLOWED_PROPERTY => 'The Data property \'%s\' is not an allowed property',
-        self::ERROR_USER_DATA_VALUE_DOES_NOT_MATCH_CORRECT_TYPE_1 => 'The Data property \'%s\' needs to be %s \'%s\' but got %s \'%s\'',
-        self::ERROR_USER_DATA_VALUE_DOES_NOT_MATCH_CORRECT_TYPE_2 => 'The Data property \'%s\' needs to be %s \'%s\' but got %s \'%s\' (with value \'%s\')',
+        self::ERROR_USER_DATA_VALUE_DOES_NOT_MATCH_CORRECT_TYPE_1 => 'The Data property \'%s\' needs to be of type \'%s\' but got type \'%s\'',
+        self::ERROR_USER_DATA_VALUE_DOES_NOT_MATCH_CORRECT_TYPE_2 => 'The Data property \'%s\' needs to be of type \'%s\' but got type \'%s\' (with value \'%s\')',
         self::ERROR_USER_ARRAY_MINIMUM_CHECK                      => 'The minimum amount of items required for Data property \'%s\' (array) is %d %s. Currently there %s only %d %s present',
         self::ERROR_USER_ARRAY_MAXIMUM_CHECK                      => 'The maximum amount of items required for Data property \'%s\' (array) is %d. Currently there %s %d %s present',
         self::ERROR_USER_ARRAY_NO_DUPLICATES_ALLOWED              => 'There are no duplicate items allowed in \'%s\' (array)',
