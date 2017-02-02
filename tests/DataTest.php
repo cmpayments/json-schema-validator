@@ -18,6 +18,10 @@ class DataTest extends BaseTest
     public function provideValidInput()
     {
         $valid = [
+            '{"type":["string", "null"]}'                                                                          => 'this a test with string',
+            '{"type":["string", "boolean", "null"]}'                                                               => null,
+            '{"type":["number", "null"]}'                                                                          => 100,
+            '{"type":["string", "null", "boolean"]}'                                                               => false,
             '{"type": "boolean"}'                                                                                  => true,
             '{"type": "string"}'                                                                                   => 'test123',
             '{"type": "string", "enum": ["test"]}'                                                                 => 'test',

@@ -92,7 +92,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
     /**
      * Validate the Data
      *
-     * @param \stdClass $schema
+     * @param \stdClass   $schema
      * @param             $data
      * @param null|string $path
      *
@@ -162,9 +162,9 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
     /**
      * Validate a single Data value
      *
-     * @param $schema
-     * @param $data
-     * @param $property
+     * @param             $schema
+     * @param             $data
+     * @param             $property
      * @param null|string $path
      *
      * @return bool
@@ -296,7 +296,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
     /**
      * Validate mandatory $schema->$property properties
      *
-     * @param $schema
+     * @param        $schema
      * @param string $path
      *
      * @return mixed
@@ -304,9 +304,13 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
      */
     private function validateSchemaMandatoryProperties($schema, $path)
     {
-        $input = [
-            sprintf('type|is_string|%s', BaseValidator::STRING),
-        ];
+        $input = [sprintf('type|is_string|%s', BaseValidator::STRING)];
+
+        // it is now possible that property type can both a string or an array
+        if (isset($schema->type) && is_array($schema->type)) {
+
+            $input = [sprintf('type|is_array|%s', BaseValidator::_ARRAY)];
+        }
 
         if (isset($schema->type) && $schema->type === BaseValidator::_ARRAY) {
 
@@ -322,7 +326,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
     /**
      * Validate optional $schema->$property properties
      *
-     * @param $schema
+     * @param        $schema
      * @param string $path
      *
      * @return mixed
@@ -377,7 +381,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
     /**
      * Validate $schema->$property
      *
-     * @param            string[] $input
+     * @param array      $input
      * @param            $schema
      * @param            $path
      * @param bool|false $mandatory
@@ -410,7 +414,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
                     );
                 }
 
-                // check if a $property' value must match a list of predefined values
+                // check if a $property' value match a list of predefined values
                 $this->validateSchemaPropertyValue($schema, $property, $path);
             }
 
@@ -453,14 +457,43 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
                 break;
         }
 
-        // check if $expected contains the $property
-        if (!in_array($schema->$property, $expected)) {
+        // we are dealing with type property that is an array
+        if (($property === BaseValidator::TYPE) && is_array($schema->$property)) {
+
+            // check if all the given values are strings
+            // http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.21
+            if (count($schema->$property) != count(array_filter($schema->$property, 'is_string'))
+               || (count($schema->$property) != count(array_filter($schema->$property))) // we do not allow empty strings as well
+            ) {
+
+                throw new ValidateSchemaException(ValidateSchemaException::ERROR_SCHEMA_PROPERTY_TYPE_IS_ARRAY_BUT_VALUES_AR_NOT_ALL_STRINGS, [$path, BaseValidator::TYPE, BaseValidator::STRING]);
+            }
+
+            // check if all the given values are unique
+            // http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.21
+            if (count($schema->type) != count(array_unique($schema->type))) {
+
+                throw new ValidateSchemaException(ValidateSchemaException::ERROR_SCHEMA_PROPERTY_TYPE_IS_ARRAY_BUT_VALUES_ARE_NOT_UNIQUE, [$path, BaseValidator::TYPE]);
+            }
+        }
+
+        $notAllowed = [];
+        foreach ((array)$schema->$property as $value) {
+
+            if (!in_array($value, $expected)) {
+
+                $notAllowed[] = $value;
+            }
+        }
+
+        // check if $notAllowed is not empty
+        if (!empty($notAllowed)) {
 
             $count = count($expected);
 
             throw new ValidateSchemaException(
                 ValidateSchemaException::ERROR_SCHEMA_PROPERTY_VALUE_IS_NOT_VALID,
-                [$schema->$property, $path, $property, $this->conjugationObject($count, '', 'any of '), $this->conjugationObject($count), implode('\', \'', $expected)]
+                [implode('\', \'', $notAllowed), $path, $property, $this->conjugationObject($count, '', 'any of '), $this->conjugationObject($count), implode('\', \'', $expected)]
             );
         }
     }
@@ -495,7 +528,7 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
     /**
      * Walk through all $schema->required items and check if there is a $schema->properties item defined for it
      *
-     * @param $schema
+     * @param        $schema
      * @param string $path
      *
      * @throws ValidateSchemaException
@@ -660,8 +693,8 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
     /**
      * Validates the JSON SCHEMA data type against $data
      *
-     * @param $schema
-     * @param $data
+     * @param             $schema
+     * @param             $data
      * @param null|string $path
      *
      * @return string
@@ -676,19 +709,35 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
         } else {
 
             // override because 'double' (float), 'integer' are covered by 'number' according to http://json-schema.org/latest/json-schema-validation.html#anchor79
-            if (in_array(($type = gettype($data)), [BaseValidator::DOUBLE, BaseValidator::INTEGER])) {
+            // strtolower; important when dealing with 'null' values
+            if (in_array(($type = strtolower(gettype($data))), [BaseValidator::DOUBLE, BaseValidator::INTEGER])) {
 
                 $type = BaseValidator::NUMBER;
             }
         }
 
         // check if given type matches the expected type, if not add verbose error
-        if ($type !== $schema->type) {
+        if (is_array($schema->type)) {
 
-            $msg    = ValidateException::ERROR_USER_DATA_VALUE_DOES_NOT_MATCH_CORRECT_TYPE_1;
-            $params = [$path, $this->getPreposition($schema->type), $schema->type, $this->getPreposition($type), $type];
+            $isValid = false;
 
-            if (!in_array($type, [BaseValidator::OBJECT, BaseValidator::CLOSURE, BaseValidator::_ARRAY, BaseValidator::BOOLEAN])) {
+            foreach ($schema->type as $t) {
+
+                if ($type === strtolower($t)) {
+
+                    $isValid = true;
+                    break;
+                }
+            }
+        }
+
+        if ((isset($isValid) && !$isValid) || (is_string($schema->type) && ($type !== strtolower($schema->type)))) {
+
+            $msg        = ValidateException::ERROR_USER_DATA_VALUE_DOES_NOT_MATCH_CORRECT_TYPE_1;
+            $schemaType = (is_array($schema->type) ? implode('\' OR \'', $schema->type) : $schema->type);
+            $params     = [$path, $schemaType, $type];
+
+            if (!in_array($type, [BaseValidator::OBJECT, BaseValidator::CLOSURE, BaseValidator::_ARRAY, BaseValidator::_NULL])) {
 
                 $msg = ValidateException::ERROR_USER_DATA_VALUE_DOES_NOT_MATCH_CORRECT_TYPE_2;
 
@@ -697,6 +746,12 @@ class SchemaValidator extends BaseValidator implements ValidatorInterface
                     $data = str_replace("\n", '', $data);
                     $data = preg_replace("/\r|\n/", '', $data);
                     $data = (strlen($data) < 25) ? $data : substr($data, 0, 25) . ' [...]';
+                }
+
+                // boolean handling
+                if (in_array($type, [BaseValidator::BOOLEAN])) {
+
+                    $data = ($data) ? true : false;
                 }
 
                 $params[] = $data;
